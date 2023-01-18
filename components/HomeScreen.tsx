@@ -2,7 +2,7 @@ import React from 'react';
 import {Text} from 'react-native';
 
 const HomeScreen = () => {
-  return <Text>HOME SCREEM</Text>;
+  return <Text>HOME SCREEN</Text>;
 };
 
 export default HomeScreen;
