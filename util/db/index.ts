@@ -7,28 +7,33 @@ const dbConfig: SQLite.DatabaseParams = {
 };
 
 interface DatabaseConnectionInfo {
-  db: SQLiteDatabase;
+  db?: SQLiteDatabase;
   isConnectionOpened: boolean;
+  errorMessage?: string;
 }
 
 let db: SQLiteDatabase;
 let isConnectionOpened: boolean = false;
+let errorMessage: string;
 
 const initiateDBConnection = (): DatabaseConnectionInfo => {
-  db = SQLite.openDatabase(
-    dbConfig,
-    () => {
-      console.log('Opened connection to DB');
-      isConnectionOpened = true;
-    },
-    (e: SQLite.SQLError) => {
-      console.log('Error in creating DB: ', e.message);
-      isConnectionOpened = false;
-    },
-  );
+
+  SQLite.openDatabase(dbConfig)
+  .then(database => {
+    console.log("Opened connection to DB");
+    db = database
+    isConnectionOpened = true
+  })
+  .catch(err => {
+    console.log("Error while opening DB connection: ", err)
+    errorMessage = err
+  })
 
   return {
     db: db,
     isConnectionOpened: isConnectionOpened,
+    errorMessage: errorMessage
   };
 };
+
+export default initiateDBConnection
