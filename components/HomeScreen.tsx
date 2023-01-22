@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
 import {Text} from 'react-native';
-import initiateDBConnection from '../util/db';
+import { dbOps } from '../util/db';
 
 const HomeScreen = () => {
   useEffect(() => {
-    let dbInfo = initiateDBConnection();
+    let dbInfo = dbOps.initiateDBConnection()
   })
 
   return <Text>HOME SCREEN</Text>;
