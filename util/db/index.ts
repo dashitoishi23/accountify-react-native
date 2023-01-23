@@ -12,10 +12,12 @@ interface DatabaseConnectionInfo {
   errorMessage?: string;
 }
 
-let dbInfo: DatabaseConnectionInfo;
+let dbInfo: DatabaseConnectionInfo = {
+  isConnectionOpened: false,
+};
 
 const initiateDBConnection = (): void => {
-  if (!dbInfo.db) {
+  if (!dbInfo || !(dbInfo as DatabaseConnectionInfo).isConnectionOpened) {
     SQLite.openDatabase(dbConfig)
       .then(database => {
         console.log('Opened connection to DB');
@@ -24,6 +26,7 @@ const initiateDBConnection = (): void => {
       })
       .catch(err => {
         console.log('Error while opening DB connection: ', err);
+        dbInfo.isConnectionOpened = false;
         dbInfo.errorMessage = err;
       });
   }
