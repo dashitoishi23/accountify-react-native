@@ -16,20 +16,21 @@ let dbInfo: DatabaseConnectionInfo = {
   isConnectionOpened: false,
 };
 
-const initiateDBConnection = (): void => {
+const initiateDBConnection = async (): Promise<boolean> => {
+  console.log('Entering init db', dbInfo);
   if (!dbInfo || !(dbInfo as DatabaseConnectionInfo).isConnectionOpened) {
-    SQLite.openDatabase(dbConfig)
-      .then(database => {
-        console.log('Opened connection to DB');
-        dbInfo.db = database;
-        dbInfo.isConnectionOpened = true;
-      })
-      .catch(err => {
-        console.log('Error while opening DB connection: ', err);
-        dbInfo.isConnectionOpened = false;
-        dbInfo.errorMessage = err;
-      });
+    try {
+      let database = await SQLite.openDatabase(dbConfig);
+      dbInfo.db = database;
+      dbInfo.isConnectionOpened = true;
+      return true;
+    } catch (err: any) {
+      dbInfo.isConnectionOpened = false;
+      dbInfo.errorMessage = err.toString();
+      return false;
+    }
   }
+  return false;
 };
 
 const getDatabaseConnection = (): SQLiteDatabase | undefined => dbInfo.db;

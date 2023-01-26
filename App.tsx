@@ -12,18 +12,29 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
 import SplashScreen from 'react-native-splash-screen';
+import {Transaction} from 'react-native-sqlite-storage';
 
 import HomeScreen from './components/HomeScreen';
 import {dbOps} from './util/db';
+import {initDatabase} from './util/db/init';
 
 const Stack = createNativeStackNavigator();
 
 const App = (): JSX.Element => {
   useEffect(() => {
-    dbOps.initiateDBConnection(); //open connection to SQLite database
+    if (!dbOps.getDatabaseConnection()) {
+      let tx: Transaction;
+      (async () => {
+        let isOpened = await dbOps.initiateDBConnection();
+        console.log(isOpened);
+        tx = await initDatabase();
+        console.log(tx);
+      })();
+    } //open connection to SQLite database
 
     SplashScreen.hide();
   });
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
