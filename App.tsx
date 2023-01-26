@@ -12,11 +12,12 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
 import SplashScreen from 'react-native-splash-screen';
-import {Transaction} from 'react-native-sqlite-storage';
+import {ResultSet, Transaction} from 'react-native-sqlite-storage';
 
 import HomeScreen from './components/HomeScreen';
 import {dbOps} from './util/db';
 import {initDatabase} from './util/db/init';
+import {addUser, getUser} from './util/db/repository';
 
 const Stack = createNativeStackNavigator();
 
