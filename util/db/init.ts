@@ -24,8 +24,8 @@ export const initDatabase = (): Promise<Transaction> => {
     );
 
     tx.executeSql(
-      'create table if not exists Spend(amount float, category varchar(10), spendTitle vaerchar(225), date datetime, \
-            recurringSpend bit)',
+      'create table if not exists Spend(id int auto increment, amount float, category varchar(10), spendTitle vaerchar(225), date datetime, \
+            recurringSpend bit, dateAdded int)',
       [],
       (_, rs) => {
         console.log('Created Spend', rs);
