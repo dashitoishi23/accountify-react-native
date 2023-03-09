@@ -1,4 +1,4 @@
-import {ResultSet, SQLError} from 'react-native-sqlite-storage';
+import {ResultSet} from 'react-native-sqlite-storage';
 import {dbOps} from '.';
 import {AccountifyUser} from './models/accountifyUser';
 

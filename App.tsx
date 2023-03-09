@@ -17,7 +17,7 @@ import {Transaction} from 'react-native-sqlite-storage';
 import HomeScreen from './components/HomeScreen';
 import {dbOps} from './util/db';
 import {initDatabase} from './util/db/init';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {MD3DarkTheme, Provider as PaperProvider} from 'react-native-paper';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,13 +37,13 @@ const App = (): JSX.Element => {
   });
 
   return (
-    <PaperProvider>
-      <NavigationContainer>
+    <NavigationContainer>
+      <PaperProvider theme={MD3DarkTheme}>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={HomeScreen} />
         </Stack.Navigator>
-      </NavigationContainer>
-    </PaperProvider>
+      </PaperProvider>
+    </NavigationContainer>
   );
 };
 
