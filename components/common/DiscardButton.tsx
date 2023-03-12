@@ -3,7 +3,7 @@ import React from 'react';
 import {Dimensions, GestureResponderEvent} from 'react-native';
 import {Button, useTheme} from 'react-native-paper';
 
-const AffirmationButton: React.FC<{
+const DiscardButton: React.FC<{
   onPressCallback: (e: GestureResponderEvent) => void;
 }> = ({onPressCallback}) => {
   const theme = useTheme();
@@ -12,18 +12,18 @@ const AffirmationButton: React.FC<{
   return (
     <Button
       style={{
-        backgroundColor: theme.colors.primaryContainer,
+        backgroundColor: theme.colors.onBackground,
         width: 0.3 * windowWidth,
       }}
       onPress={onPressCallback}
       labelStyle={{
-        color: theme.colors.onBackground,
+        color: theme.colors.background,
         fontSize: 20,
       }}
-      mode="contained">
-      Save
+      mode="outlined">
+      Discard
     </Button>
   );
 };
 
-export default AffirmationButton;
+export default DiscardButton;
