@@ -1,8 +1,8 @@
 import React from 'react';
-import {Text} from 'react-native';
+import AffirmationButton from './common/AffirmationButton';
 
 const HomeScreen = () => {
-  return <Text>HOME SCREEN</Text>;
+  return <AffirmationButton />;
 };
 
 export default HomeScreen;
