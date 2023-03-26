@@ -2,16 +2,17 @@
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import {TextInput} from 'react-native-paper';
+import currencyMasker from '../../util/currencyMasker';
 
-const MoneyAmountField: React.FC<{amount: number | undefined}> = ({amount}) => {
-  const [fieldAmount, setFieldAmount] = useState(amount ?? 0);
+const MoneyAmountField: React.FC<{amount: string | undefined}> = ({amount}) => {
+  const [fieldAmount, setFieldAmount] = useState(amount ? amount : '0');
   return (
     <View>
       <TextInput
         label="Amount"
         mode="outlined"
         keyboardType="decimal-pad"
-        value={fieldAmount.toString()}
+        value={currencyMasker(fieldAmount)}
         style={{
           fontSize: 20,
         }}
@@ -21,9 +22,10 @@ const MoneyAmountField: React.FC<{amount: number | undefined}> = ({amount}) => {
             onPress={() => console.log('Calc')}
           />
         }
-        onChangeText={newAmount =>
-          setFieldAmount(newAmount ? parseInt(newAmount, 10) : 0)
-        }
+        onChangeText={newAmount => {
+          console.log(newAmount, 'enterted');
+          setFieldAmount(newAmount ? currencyMasker(newAmount) : '0');
+        }}
       />
     </View>
   );

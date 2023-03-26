@@ -9,7 +9,7 @@ const HomeScreen = () => {
     <View>
       <AffirmationButton onPressCallback={() => console.log('Pressed')} />
       <DiscardButton onPressCallback={() => console.log('Discard pressed')} />
-      <MoneyAmountField amount={450000} />
+      <MoneyAmountField amount={Math.abs(450000).toFixed(2)} />
     </View>
   );
 };
