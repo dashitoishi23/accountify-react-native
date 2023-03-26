@@ -7,8 +7,7 @@ import currencyMasker from '../../util/currencyMasker';
 const MoneyAmountField: React.FC<{
   amount: string | undefined;
   setAmount: Function;
-  onCalcPressedHandler: Function;
-}> = ({amount, setAmount, onCalcPressedHandler}) => {
+}> = ({amount, setAmount}) => {
   const [fieldAmount, setFieldAmount] = useState(amount ? amount : '0');
   return (
     <View>
@@ -20,12 +19,7 @@ const MoneyAmountField: React.FC<{
         style={{
           fontSize: 20,
         }}
-        right={
-          <TextInput.Icon
-            icon="calculator"
-            onPress={() => onCalcPressedHandler}
-          />
-        }
+        right={<TextInput.Icon icon="calculator" />}
         onChangeText={newAmount => {
           console.log(newAmount, 'enterted');
           setFieldAmount(newAmount ? currencyMasker(newAmount) : '0');
