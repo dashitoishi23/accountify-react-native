@@ -26,8 +26,7 @@ const App = (): JSX.Element => {
     if (!dbOps.getDatabaseConnection()) {
       let tx: Transaction;
       (async () => {
-        let isOpened = await dbOps.initiateDBConnection();
-        console.log(isOpened);
+        await dbOps.initiateDBConnection();
         tx = await initDatabase();
         console.log(tx);
       })();

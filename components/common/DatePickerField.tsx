@@ -39,6 +39,7 @@ const DatePickerField: React.FC<{date?: Date; onConfirmHandler: Function}> = ({
           onConfirmHandler(newDate);
           setIsOpen(false);
         }}
+        onCancel={() => setIsOpen(false)}
       />
     </View>
   );

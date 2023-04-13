@@ -1,5 +1,3 @@
-/* eslint-disable react/no-string-refs */
-/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';

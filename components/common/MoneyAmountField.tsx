@@ -19,7 +19,6 @@ const MoneyAmountField: React.FC<{
         style={{
           fontSize: 20,
         }}
-        right={<TextInput.Icon icon="calculator" />}
         onChangeText={newAmount => {
           console.log(newAmount, 'enterted');
           setFieldAmount(newAmount ? currencyMasker(newAmount) : '0');
