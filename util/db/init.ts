@@ -1,4 +1,8 @@
-import {SQLiteDatabase, Transaction} from 'react-native-sqlite-storage';
+import {
+  ResultSetRowList,
+  SQLiteDatabase,
+  Transaction,
+} from 'react-native-sqlite-storage';
 import {dbOps} from '.';
 
 export const initDatabase = (): Promise<Transaction> => {
@@ -32,4 +36,19 @@ export const initDatabase = (): Promise<Transaction> => {
       },
     );
   });
+};
+
+export const getAccountifyUser = async (): Promise<ResultSetRowList> => {
+  let db = dbOps.getDatabaseConnection();
+  if (!db) {
+    dbOps
+      .initiateDBConnection()
+      .then(() => (db = dbOps.getDatabaseConnection()))
+      .catch(err => console.log(err));
+  }
+
+  let tx = await (db as SQLiteDatabase).transaction(() => {});
+  let rs = await tx.executeSql('select * from AccountifyUser');
+
+  return rs[1].rows;
 };

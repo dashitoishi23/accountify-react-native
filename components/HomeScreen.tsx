@@ -1,35 +1,27 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Text} from 'react-native-paper';
-import AffirmationButton from './common/AffirmationButton';
-import DatePickerField from './common/DatePickerField';
-import DiscardButton from './common/DiscardButton';
-import MoneyAmountField from './common/MoneyAmountField';
-import TextBox from './common/TextBox';
+import {dbOps} from '../util/db';
+import {getAccountifyUser} from '../util/db/init';
 
 const HomeScreen = () => {
-  const [amount, setAmount] = useState('0');
-  const [text, setText] = useState('0');
+  const [newUser, setIsNewUser] = useState(true);
+  const [accountifyUser, setAccountifyUser] = useState(null);
   const [date, setDate] = useState(new Date());
-  const onConfirmHandler = (newDate: Date) => {
-    setDate(newDate);
-  };
+  useEffect(() => {
+    const dbConnection = dbOps.getDatabaseConnection();
+    if (dbConnection) {
+      async () => {
+        const user = await getAccountifyUser();
+        if (user.length !== 0) {
+          setIsNewUser(true);
+        } else {
+          setAccountifyUser(user.item(0));
+        }
+      };
+    }
+  });
 
-  return (
-    <View>
-      <AffirmationButton onPressCallback={() => console.log('Pressed')} />
-      <DiscardButton onPressCallback={() => console.log('Discard pressed')} />
-      <MoneyAmountField
-        amount={Math.abs(450000).toFixed(2)}
-        setAmount={setAmount}
-      />
-      <Text>{amount}</Text>
-      <TextBox label="Reason" placeholder="Enter reason" setText={setText} />
-      <Text>{text}</Text>
-      <DatePickerField onConfirmHandler={onConfirmHandler} />
-      <Text>{date.toLocaleDateString()}</Text>
-    </View>
-  );
+  return <View></View>;
 };
 
 export default HomeScreen;
