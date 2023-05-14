@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {dbOps} from '../util/db';
 import {getAccountifyUser} from '../util/db/init';
+import AffirmationButton from './common/AffirmationButton';
 
-const HomeScreen = () => {
+const HomeScreen: React.FC<{
+  navigation: any;
+}> = ({navigation}) => {
   const [newUser, setIsNewUser] = useState(true);
   const [accountifyUser, setAccountifyUser] = useState(null);
   const [date, setDate] = useState(new Date());
@@ -21,7 +25,23 @@ const HomeScreen = () => {
     }
   });
 
-  return <View></View>;
+  return newUser ? (
+    <View>
+      <AffirmationButton
+        onPressCallback={() => {
+          navigation.navigate('Settings');
+        }}
+        text="Add your details to get started"
+      />
+    </View>
+  ) : (
+    <View>
+      <AffirmationButton
+        onPressCallback={() => console.log('Pressed')}
+        text="Old User"
+      />
+    </View>
+  );
 };
 
 export default HomeScreen;

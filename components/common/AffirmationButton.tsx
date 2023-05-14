@@ -5,7 +5,8 @@ import {Button, useTheme} from 'react-native-paper';
 
 const AffirmationButton: React.FC<{
   onPressCallback: (e: GestureResponderEvent) => void;
-}> = ({onPressCallback}) => {
+  text: string;
+}> = ({onPressCallback, text}) => {
   const theme = useTheme();
   const windowWidth = Dimensions.get('window').width;
 
@@ -13,7 +14,7 @@ const AffirmationButton: React.FC<{
     <Button
       style={{
         backgroundColor: theme.colors.primaryContainer,
-        width: 0.3 * windowWidth,
+        margin: 0.03 * windowWidth,
       }}
       onPress={onPressCallback}
       labelStyle={{
@@ -21,7 +22,7 @@ const AffirmationButton: React.FC<{
         fontSize: 20,
       }}
       mode="contained">
-      Save
+      {text}
     </Button>
   );
 };

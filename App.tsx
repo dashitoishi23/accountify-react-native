@@ -18,6 +18,7 @@ import HomeScreen from './components/HomeScreen';
 import {dbOps} from './util/db';
 import {initDatabase} from './util/db/init';
 import {Provider as PaperProvider} from 'react-native-paper';
+import SettingsScreen from './components/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -40,6 +41,7 @@ const App = (): JSX.Element => {
       <PaperProvider>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>
