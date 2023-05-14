@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import {View} from 'react-native';
 import MoneyAmountField from './common/MoneyAmountField';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
+import AffirmationButton from './common/AffirmationButton';
 
 const SettingsScreen = () => {
   const [settings, setSettings] = useState<AccountifyUser>({
@@ -18,9 +19,14 @@ const SettingsScreen = () => {
         setAmount={(newAmount: string) =>
           setSettings({
             ...settings,
-            monthlyIncome: parseInt(newAmount, 10) as number,
+            monthlyIncome: parseFloat(newAmount.split(',').join('')) as number,
           })
         }
+      />
+
+      <AffirmationButton
+        text="Save settings"
+        onPressCallback={() => console.log(settings)}
       />
     </View>
   );
