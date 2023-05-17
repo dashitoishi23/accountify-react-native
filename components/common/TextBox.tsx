@@ -1,23 +1,35 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
-import {TextInput} from 'react-native-paper';
+import {View} from 'react-native';
+import {Text, TextInput} from 'react-native-paper';
 
 const TextBox: React.FC<{
   label: string;
   text?: string;
   placeholder: string;
   setText: Function;
-}> = ({label, placeholder, setText, text}) => {
+  type: 'number' | 'string';
+  bottomText?: string;
+  marginBottom?: number;
+}> = ({label, placeholder, setText, type, text, bottomText, marginBottom}) => {
   const [content, setContent] = useState(text ? text : '');
   return (
-    <TextInput
-      label={label}
-      value={content}
-      placeholder={placeholder}
-      onChangeText={newText => {
-        setContent(newText);
-        setText(newText);
-      }}
-    />
+    <View
+      style={{
+        marginBottom: !marginBottom ? 0 : marginBottom,
+      }}>
+      <TextInput
+        label={label}
+        value={content}
+        placeholder={placeholder}
+        keyboardType={type === 'number' ? 'decimal-pad' : 'default'}
+        onChangeText={newText => {
+          setContent(newText);
+          setText(newText);
+        }}
+      />
+      {bottomText ? <Text>{bottomText}</Text> : null}
+    </View>
   );
 };
 

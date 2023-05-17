@@ -1,16 +1,23 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {TextInput} from 'react-native-paper';
+import {Text, TextInput} from 'react-native-paper';
 import currencyMasker from '../../util/currencyMasker';
+import {getDimensions} from '../../util/getDimensions';
 
 const MoneyAmountField: React.FC<{
   amount: string | undefined;
   setAmount: Function;
-}> = ({amount, setAmount}) => {
+  label: string;
+}> = ({amount, setAmount, label}) => {
   const [fieldAmount, setFieldAmount] = useState(amount ? amount : '0');
+  const {windowWidth} = getDimensions();
   return (
-    <View>
+    <View
+      style={{
+        marginBottom: 0.05 * windowWidth,
+      }}>
+      <Text>{label}</Text>
       <TextInput
         label="Amount"
         mode="outlined"
