@@ -6,6 +6,7 @@ import AffirmationButton from './common/AffirmationButton';
 import TextBox from './common/TextBox';
 import {getDimensions} from '../util/getDimensions';
 import {View} from 'react-native';
+import DropdownField from './common/DropdownField';
 
 const SettingsScreen = () => {
   const [settings, setSettings] = useState<AccountifyUser>({
@@ -72,6 +73,19 @@ const SettingsScreen = () => {
         }}
         bottomText="Savings suggests spends that are made towards your future and/or current savings. Ex. investments. Suggested: 20%"
         marginBottom={0.05 * windowHeight}
+      />
+      <DropdownField
+        items={[
+          {
+            label: 'INR',
+            value: 'INR',
+          },
+          {
+            label: 'USD',
+            value: 'USD',
+          },
+        ]}
+        setItem={(newValue: any) => console.log('NEW', newValue)}
       />
       <AffirmationButton
         text="Save settings"
