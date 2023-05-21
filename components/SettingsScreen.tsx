@@ -9,14 +9,20 @@ import {View} from 'react-native';
 import DropdownField from './common/DropdownField';
 import {CurrencyList} from '../util/currencylist';
 
-const SettingsScreen = () => {
-  const [settings, setSettings] = useState<AccountifyUser>({
-    monthlyIncome: 0,
-    needsAllocation: 50,
-    wantsAllocation: 30,
-    savingsAllocation: 20,
-    defaultCurrency: 'INR',
-  });
+const SettingsScreen: React.FC<{
+  currentSettings?: AccountifyUser;
+}> = ({currentSettings}) => {
+  const [settings, setSettings] = useState<AccountifyUser>(
+    !currentSettings
+      ? {
+          monthlyIncome: 0,
+          needsAllocation: 50,
+          wantsAllocation: 30,
+          savingsAllocation: 20,
+          defaultCurrency: 'INR',
+        }
+      : currentSettings,
+  );
 
   const {windowHeight} = getDimensions();
   return (
@@ -27,7 +33,7 @@ const SettingsScreen = () => {
         justifyContent: 'space-evenly',
       }}>
       <MoneyAmountField
-        amount="0"
+        amount={settings.monthlyIncome.toString()}
         setAmount={(newAmount: string) =>
           setSettings({
             ...settings,
@@ -46,11 +52,12 @@ const SettingsScreen = () => {
             needsAllocation: parseFloat(needsAllocation),
           });
         }}
+        text={settings.needsAllocation.toString()}
         bottomText="Needs suggests spends that are towards the necessities of life. Suggested: 50%"
         marginBottom={0.05 * windowHeight}
       />
       <TextBox
-        label="Savings Allocation"
+        label="Wants Allocation"
         type="number"
         placeholder="Enter percentage"
         setText={(savingsAllocation: string) => {
@@ -59,11 +66,12 @@ const SettingsScreen = () => {
             savingsAllocation: parseFloat(savingsAllocation),
           });
         }}
+        text={settings.wantsAllocation.toString()}
         bottomText="Wants suggests spends that are targetted towards lifestyle, indulegment etc. Ex. subscriptions. Suggested: 30%"
         marginBottom={0.05 * windowHeight}
       />
       <TextBox
-        label="Wants Allocation"
+        label="Savings Allocation"
         type="number"
         placeholder="Enter percentage"
         setText={(wantsAllocation: string) => {
@@ -72,6 +80,7 @@ const SettingsScreen = () => {
             wantsAllocation: parseFloat(wantsAllocation),
           });
         }}
+        text={settings.savingsAllocation.toString()}
         bottomText="Savings suggests spends that are made towards your future and/or current savings. Ex. investments. Suggested: 20%"
         marginBottom={0.05 * windowHeight}
       />
@@ -86,6 +95,7 @@ const SettingsScreen = () => {
         placeholderText="Select default currency"
         marginBottom={0.05 * windowHeight}
         labelText="Default currency"
+        value={settings.defaultCurrency}
       />
       <AffirmationButton
         text="Save settings"

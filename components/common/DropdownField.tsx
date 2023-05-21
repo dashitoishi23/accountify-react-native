@@ -10,9 +10,10 @@ const DropdownField: React.FC<{
   setItem: Function;
   placeholderText: string;
   labelText: string;
+  value: string;
   marginBottom?: number;
-}> = ({items, setItem, marginBottom, placeholderText, labelText}) => {
-  const [currentValue, setCurrentValue] = useState<any>(null);
+}> = ({items, setItem, marginBottom, placeholderText, labelText, value}) => {
+  const [currentValue, setCurrentValue] = useState<any>(value);
   const [open, setOpen] = useState<boolean>(false);
   const {windowHeight} = getDimensions();
   return (

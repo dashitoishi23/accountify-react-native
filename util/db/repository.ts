@@ -23,4 +23,14 @@ const addUser = (newUser: AccountifyUser): Promise<[ResultSet]> | undefined => {
   );
 };
 
-export {getUser, addUser};
+const updateUser = (
+  updatedUser: AccountifyUser,
+): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(
+    `update AccountifyUser set monthlyIncome = ${updatedUser.monthlyIncome}, needsAllocation = ${updatedUser.needsAllocation}, 
+           wantsAllocation = ${updatedUser.wantsAllocation}, savingsAllocation = ${updatedUser.savingsAllocation}, defaultCurrenct = '${updatedUser.defaultCurrency}'`,
+    [],
+  );
+};
+
+export {getUser, addUser, updateUser};
