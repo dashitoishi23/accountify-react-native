@@ -7,6 +7,7 @@ import TextBox from './common/TextBox';
 import {getDimensions} from '../util/getDimensions';
 import {View} from 'react-native';
 import DropdownField from './common/DropdownField';
+import {CurrencyList} from '../util/currencylist';
 
 const SettingsScreen = () => {
   const [settings, setSettings] = useState<AccountifyUser>({
@@ -75,21 +76,22 @@ const SettingsScreen = () => {
         marginBottom={0.05 * windowHeight}
       />
       <DropdownField
-        items={[
-          {
-            label: 'INR',
-            value: 'INR',
-          },
-          {
-            label: 'USD',
-            value: 'USD',
-          },
-        ]}
-        setItem={(newValue: any) => console.log('NEW', newValue)}
+        items={CurrencyList}
+        setItem={(newValue: any) =>
+          setSettings({
+            ...settings,
+            defaultCurrency: newValue,
+          })
+        }
+        placeholderText="Select default currency"
+        marginBottom={0.05 * windowHeight}
+        labelText="Default currency"
       />
       <AffirmationButton
         text="Save settings"
-        onPressCallback={() => console.log(settings)}
+        onPressCallback={() => {
+          console.log(settings);
+        }}
       />
     </View>
   );
