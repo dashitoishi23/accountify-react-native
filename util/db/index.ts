@@ -18,6 +18,7 @@ let dbInfo: DatabaseConnectionInfo = {
 
 const initiateDBConnection = async (): Promise<boolean> => {
   console.log('Entering init db', dbInfo);
+  SQLite.enablePromise(true);
   if (!dbInfo || !(dbInfo as DatabaseConnectionInfo).isConnectionOpened) {
     try {
       let database = await SQLite.openDatabase(dbConfig);
@@ -30,9 +31,9 @@ const initiateDBConnection = async (): Promise<boolean> => {
       return false;
     }
   }
-  return false;
+  return true;
 };
 
-const getDatabaseConnection = (): SQLiteDatabase | undefined => dbInfo.db;
+const getDatabaseConnection = (): SQLiteDatabase => dbInfo.db as SQLiteDatabase;
 
 export const dbOps = {initiateDBConnection, getDatabaseConnection};

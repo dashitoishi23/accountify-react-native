@@ -1,26 +1,11 @@
-import {
-  ResultSetRowList,
-  SQLiteDatabase,
-  Transaction,
-} from 'react-native-sqlite-storage';
-import {dbOps} from '.';
+import {SQLiteDatabase, Transaction} from 'react-native-sqlite-storage';
 
-export const initDatabase = (): Promise<Transaction> => {
-  let db = dbOps.getDatabaseConnection();
-
+export const initDatabase = (db: SQLiteDatabase): Promise<Transaction> => {
   console.log('DB', db);
-
-  if (!db) {
-    dbOps
-      .initiateDBConnection()
-      .then(() => (db = dbOps.getDatabaseConnection()))
-      .catch(err => console.log(err));
-  }
-
   return (db as SQLiteDatabase).transaction((tx: Transaction) => {
     tx.executeSql(
       'create table if not exists AccountifyUser (monthlyIncome float, needsAllocation float, wantsAllocation float,\
-                savingsAllocation float, defaultCurrency varchar(3))',
+                  savingsAllocation float, defaultCurrency varchar(3))',
       [],
       (_, rs) => {
         console.log('Created AccountifyUser', rs);
@@ -29,7 +14,7 @@ export const initDatabase = (): Promise<Transaction> => {
 
     tx.executeSql(
       'create table if not exists Spend(id int auto increment, amount float, category varchar(10), spendTitle vaerchar(225), date datetime, \
-            recurringSpend bit, dateAdded int)',
+              recurringSpend bit, dateAdded int)',
       [],
       (_, rs) => {
         console.log('Created Spend', rs);
@@ -38,17 +23,8 @@ export const initDatabase = (): Promise<Transaction> => {
   });
 };
 
-export const getAccountifyUser = async (): Promise<ResultSetRowList> => {
-  let db = dbOps.getDatabaseConnection();
-  if (!db) {
-    dbOps
-      .initiateDBConnection()
-      .then(() => (db = dbOps.getDatabaseConnection()))
-      .catch(err => console.log(err));
-  }
+export const getAccountifyUser = async (db: SQLiteDatabase) => {
+  const results = await db.executeSql('Select * from AccountifyUser');
 
-  let tx = await (db as SQLiteDatabase).transaction(() => {});
-  let rs = await tx.executeSql('select * from AccountifyUser');
-
-  return rs[1].rows;
+  return results[0].rows;
 };

@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {dbOps} from '../util/db';
-import {getAccountifyUser} from '../util/db/init';
+import {getAccountifyUser, initDatabase} from '../util/db/init';
 import AffirmationButton from './common/AffirmationButton';
 
 const HomeScreen: React.FC<{
@@ -12,17 +12,18 @@ const HomeScreen: React.FC<{
   const [accountifyUser, setAccountifyUser] = useState(null);
   const [date, setDate] = useState(new Date());
   useEffect(() => {
-    const dbConnection = dbOps.getDatabaseConnection();
-    if (dbConnection) {
-      async () => {
-        const user = await getAccountifyUser();
-        if (user.length !== 0) {
-          setIsNewUser(true);
-        } else {
-          setAccountifyUser(user.item(0));
-        }
-      };
-    }
+    (async () => {
+      await dbOps.initiateDBConnection();
+      const dbConnection = dbOps.getDatabaseConnection();
+      await initDatabase(dbConnection);
+      const user = await getAccountifyUser(dbConnection);
+      console.log('User', user.item(0));
+      // if (user.length !== 0) {
+      //   setIsNewUser(true);
+      // } else {
+      //   setAccountifyUser(user.item(0));
+      // }
+    })();
   });
 
   return newUser ? (

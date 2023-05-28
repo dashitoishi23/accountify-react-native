@@ -8,6 +8,7 @@ import {getDimensions} from '../util/getDimensions';
 import {View} from 'react-native';
 import DropdownField from './common/DropdownField';
 import {CurrencyList} from '../util/currencylist';
+import {addUser, updateUser} from '../util/db/repository';
 
 const SettingsScreen: React.FC<{
   currentSettings?: AccountifyUser;
@@ -23,6 +24,18 @@ const SettingsScreen: React.FC<{
         }
       : currentSettings,
   );
+
+  const upsertSettings = async () => {
+    try {
+      if (!currentSettings) {
+        await addUser(settings);
+      } else {
+        await updateUser(settings);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const {windowHeight} = getDimensions();
   return (
@@ -99,9 +112,7 @@ const SettingsScreen: React.FC<{
       />
       <AffirmationButton
         text="Save settings"
-        onPressCallback={() => {
-          console.log(settings);
-        }}
+        onPressCallback={async () => await upsertSettings()}
       />
     </View>
   );
