@@ -13,7 +13,7 @@ export const initDatabase = (db: SQLiteDatabase): Promise<Transaction> => {
     );
 
     tx.executeSql(
-      'create table if not exists Spend(id int auto increment, amount float, category varchar(10), spendTitle vaerchar(225), date datetime, \
+      'create table if not exists Spend(id string, amount float, category varchar(10), spendTitle vaerchar(225), \
               recurringSpend bit, dateAdded int)',
       [],
       (_, rs) => {

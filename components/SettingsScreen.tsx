@@ -5,14 +5,15 @@ import {AccountifyUser} from '../util/db/models/accountifyUser';
 import AffirmationButton from './common/AffirmationButton';
 import TextBox from './common/TextBox';
 import {getDimensions} from '../util/getDimensions';
-import {View} from 'react-native';
+import {ToastAndroid, View} from 'react-native';
 import DropdownField from './common/DropdownField';
 import {CurrencyList} from '../util/currencylist';
 import {addUser, updateUser} from '../util/db/repository';
 
 const SettingsScreen: React.FC<{
   currentSettings?: AccountifyUser;
-}> = ({currentSettings}) => {
+  navigation: any;
+}> = ({currentSettings, navigation}) => {
   const [settings, setSettings] = useState<AccountifyUser>(
     !currentSettings
       ? {
@@ -25,12 +26,55 @@ const SettingsScreen: React.FC<{
       : currentSettings,
   );
 
+  const settingsValidator = () => {
+    const totalPercentage =
+      settings.needsAllocation +
+      settings.wantsAllocation +
+      settings.savingsAllocation;
+    if (totalPercentage !== 100)
+      return {
+        error: true,
+        message: 'Percentages should add up to 100',
+      };
+
+    if (
+      settings.needsAllocation > 100 ||
+      settings.wantsAllocation > 100 ||
+      settings.savingsAllocation > 100
+    )
+      return {
+        error: true,
+        message: 'No percentage can be more than 100',
+      };
+
+    if (settings.monthlyIncome === 0)
+      return {
+        error: true,
+        message: 'Monthly income must be non zero',
+      };
+
+    return {
+      error: false,
+      message: 'NA',
+    };
+  };
+
   const upsertSettings = async () => {
     try {
-      if (!currentSettings) {
-        await addUser(settings);
+      const {error, message} = settingsValidator();
+      if (!error) {
+        if (!currentSettings) {
+          await addUser(settings);
+        } else {
+          await updateUser(settings);
+        }
+        navigation.push('Home', {currentUser: settings});
       } else {
-        await updateUser(settings);
+        ToastAndroid.showWithGravity(
+          message,
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
       }
     } catch (err) {
       console.log(err);

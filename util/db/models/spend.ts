@@ -1,9 +1,8 @@
 export interface Spend {
-  id: number;
+  id: string;
   amount: number;
   category: string;
   spendTitle: string;
-  date: Date;
   recurringSpend: boolean;
   timeAdded: number;
 }

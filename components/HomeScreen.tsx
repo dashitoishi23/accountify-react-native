@@ -5,31 +5,51 @@ import {Text} from 'react-native-paper';
 import {dbOps} from '../util/db';
 import {getAccountifyUser, initDatabase} from '../util/db/init';
 import AffirmationButton from './common/AffirmationButton';
+import {getDimensions} from '../util/getDimensions';
+import {AccountifyUser} from '../util/db/models/accountifyUser';
+import currencyMasker from '../util/currencyMasker';
+import {getSpendsObject} from '../util/getSpendsObject';
 
 const HomeScreen: React.FC<{
   navigation: any;
-}> = ({navigation}) => {
+  route: any;
+}> = ({navigation, route}) => {
   const [newUser, setIsNewUser] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
-  const [accountifyUser, setAccountifyUser] = useState(null);
+  const [accountifyUser, setAccountifyUser] = useState<AccountifyUser | null>(
+    null,
+  );
   const [date, setDate] = useState(new Date());
+  const [spendsObject, setSpendsObject] = useState<any>();
+  const {windowHeight, windowWidth} = getDimensions();
   useEffect(() => {
+    console.log('route', route);
     (async () => {
-      await dbOps.initiateDBConnection();
-      const dbConnection = dbOps.getDatabaseConnection();
-      await initDatabase(dbConnection);
-      const user = await getAccountifyUser(dbConnection);
-      console.log('User', user.length);
-      if (user.length === 0) {
-        setIsNewUser(true);
-      } else {
+      if (route.params && route.params.currentUser) {
         setIsNewUser(false);
-        setAccountifyUser(user.item(0));
+        setAccountifyUser(route.params.currentUser);
+        const spends = await getSpendsObject(route.params.currentUser);
+        setSpendsObject(spends);
+        setIsLoading(false);
+      } else {
+        await dbOps.initiateDBConnection();
+        const dbConnection = dbOps.getDatabaseConnection();
+        await initDatabase(dbConnection);
+        const user = await getAccountifyUser(dbConnection);
+        console.log('User', user.length);
+        if (user.length === 0) {
+          setIsNewUser(true);
+        } else {
+          setIsNewUser(false);
+          const spends = await getSpendsObject(user.item(0));
+          setSpendsObject(spends);
+          setAccountifyUser(user.item(0));
+        }
+        setIsLoading(false);
+        console.log('NEW', newUser);
       }
-      setIsLoading(false);
-      console.log('NEW', newUser);
     })();
-  }, [newUser]);
+  }, []);
 
   return !isLoading ? (
     newUser ? (
@@ -42,11 +62,32 @@ const HomeScreen: React.FC<{
         />
       </View>
     ) : (
-      <View>
-        <AffirmationButton
-          onPressCallback={() => console.log('Pressed')}
-          text="Old User"
-        />
+      <View style={{flex: 1, flexDirection: 'column'}}>
+        <Text style={{fontSize: 40}}>Hello, here are your finances</Text>
+        <Text style={{fontSize: 35}}>Needs</Text>
+        <Text style={{fontSize: 25}}>
+          {accountifyUser?.defaultCurrency}{' '}
+          {currencyMasker(spendsObject.needs.remaining.toString())}
+        </Text>
+        <Text style={{fontSize: 25}}>
+          {spendsObject.needs.percentage}% remaining
+        </Text>
+        <Text style={{fontSize: 35}}>Wants</Text>
+        <Text style={{fontSize: 25}}>
+          {accountifyUser?.defaultCurrency}{' '}
+          {currencyMasker(spendsObject.wants.remaining.toString())}
+        </Text>
+        <Text style={{fontSize: 25}}>
+          {spendsObject.wants.percentage}% remaining
+        </Text>
+        <Text style={{fontSize: 35}}>Savings</Text>
+        <Text style={{fontSize: 25}}>
+          {accountifyUser?.defaultCurrency}{' '}
+          {currencyMasker(spendsObject.savings.remaining.toString())}
+        </Text>
+        <Text style={{fontSize: 25}}>
+          {spendsObject.savings.percentage}% remaining
+        </Text>
       </View>
     )
   ) : (

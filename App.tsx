@@ -14,7 +14,10 @@ import React, {useEffect} from 'react';
 import SplashScreen from 'react-native-splash-screen';
 
 import HomeScreen from './components/HomeScreen';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {
+  Provider as PaperProvider,
+  MD3DarkTheme as DarkTheme,
+} from 'react-native-paper';
 import SettingsScreen from './components/SettingsScreen';
 
 const Stack = createNativeStackNavigator();
@@ -26,7 +29,7 @@ const App = (): JSX.Element => {
 
   return (
     <NavigationContainer>
-      <PaperProvider>
+      <PaperProvider theme={DarkTheme}>
         <Stack.Navigator initialRouteName="Home">
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />

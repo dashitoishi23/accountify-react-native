@@ -1,4 +1,5 @@
 const currencyMasker = (amount: string) => {
+  console.log('------AMOUNT------', typeof amount);
   amount = amount.split(',').join('');
   console.log(amount, 'amount');
   const parts = amount.split('.');

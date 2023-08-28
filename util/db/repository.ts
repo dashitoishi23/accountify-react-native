@@ -1,6 +1,7 @@
 import {ResultSet} from 'react-native-sqlite-storage';
 import {dbOps} from '.';
 import {AccountifyUser} from './models/accountifyUser';
+import {Spend} from './models/spend';
 
 let db = dbOps.getDatabaseConnection();
 
@@ -33,4 +34,44 @@ const updateUser = (
   );
 };
 
-export {getUser, addUser, updateUser};
+const addSpend = (newSpend: Spend): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(
+    `insert into Spend values ('${newSpend.id}', ${newSpend.amount}, '${newSpend.category}', '${newSpend.spendTitle}', 
+        ${newSpend.recurringSpend}, ${newSpend.timeAdded})`,
+    [],
+  );
+};
+
+const getSpendByCategory = (
+  category: string,
+): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(`Select * from Spend where category = ?`, [category]);
+};
+
+const getSpendById = (id: string): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(`Select * from Spend where id = ?`, [id]);
+};
+
+const getAllSpends = (): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(`Select * from Spend`);
+};
+
+const getTotalSpendsByCategory = (
+  category: string,
+): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(
+    `select sum(amount) as total from Spend where category = ?`,
+    [category],
+  );
+};
+
+export {
+  getUser,
+  addUser,
+  updateUser,
+  addSpend,
+  getSpendByCategory,
+  getSpendById,
+  getAllSpends,
+  getTotalSpendsByCategory,
+};
