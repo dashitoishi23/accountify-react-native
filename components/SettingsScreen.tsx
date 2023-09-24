@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import MoneyAmountField from './common/MoneyAmountField';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
 import AffirmationButton from './common/AffirmationButton';
@@ -9,22 +9,41 @@ import {ToastAndroid, View} from 'react-native';
 import DropdownField from './common/DropdownField';
 import {CurrencyList} from '../util/currencylist';
 import {addUser, updateUser} from '../util/db/repository';
+import {useTheme} from 'react-native-paper';
+import {dbOps} from '../util/db';
+import {getAccountifyUser} from '../util/db/init';
 
 const SettingsScreen: React.FC<{
-  currentSettings?: AccountifyUser;
   navigation: any;
-}> = ({currentSettings, navigation}) => {
-  const [settings, setSettings] = useState<AccountifyUser>(
-    !currentSettings
-      ? {
-          monthlyIncome: 0,
-          needsAllocation: 50,
-          wantsAllocation: 30,
-          savingsAllocation: 20,
-          defaultCurrency: 'INR',
-        }
-      : currentSettings,
-  );
+}> = ({navigation}) => {
+  const [settings, setSettings] = useState<AccountifyUser>({
+    monthlyIncome: 0,
+    needsAllocation: 50,
+    wantsAllocation: 30,
+    savingsAllocation: 20,
+    defaultCurrency: 'INR',
+  });
+
+  const [newUser, setNewUser] = useState<boolean>(true);
+
+  useEffect(() => {
+    (async () => {
+      const settings = await getSettings();
+      if (settings.length > 0) {
+        setSettings(settings.item(0));
+        setNewUser(false);
+      }
+    })();
+  }, []);
+
+  const getSettings = async () => {
+    await dbOps.initiateDBConnection();
+    const dbConnection = dbOps.getDatabaseConnection();
+    const user = await getAccountifyUser(dbConnection);
+    return user;
+  };
+
+  const theme = useTheme();
 
   const settingsValidator = () => {
     const totalPercentage =
@@ -63,7 +82,7 @@ const SettingsScreen: React.FC<{
     try {
       const {error, message} = settingsValidator();
       if (!error) {
-        if (!currentSettings) {
+        if (newUser) {
           await addUser(settings);
         } else {
           await updateUser(settings);
@@ -85,9 +104,9 @@ const SettingsScreen: React.FC<{
   return (
     <View
       style={{
-        padding: 20,
         flexDirection: 'column',
         justifyContent: 'space-evenly',
+        backgroundColor: theme.colors.background,
       }}>
       <MoneyAmountField
         amount={settings.monthlyIncome.toString()}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Text} from 'react-native-paper';
+import {Text, useTheme} from 'react-native-paper';
 import {dbOps} from '../util/db';
 import {getAccountifyUser, initDatabase} from '../util/db/init';
 import AffirmationButton from './common/AffirmationButton';
@@ -22,6 +22,7 @@ const HomeScreen: React.FC<{
   const [date, setDate] = useState(new Date());
   const [spendsObject, setSpendsObject] = useState<any>();
   const {windowHeight, windowWidth} = getDimensions();
+  const theme = useTheme();
   useEffect(() => {
     console.log('route', route);
     (async () => {
@@ -53,7 +54,7 @@ const HomeScreen: React.FC<{
 
   return !isLoading ? (
     newUser ? (
-      <View>
+      <View style={{backgroundColor: theme.colors.background}}>
         <AffirmationButton
           onPressCallback={() => {
             navigation.navigate('Settings');
@@ -62,32 +63,60 @@ const HomeScreen: React.FC<{
         />
       </View>
     ) : (
-      <View style={{flex: 1, flexDirection: 'column'}}>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          backgroundColor: theme.colors.background,
+          justifyContent: 'space-between',
+        }}>
         <Text style={{fontSize: 40}}>Hello, here are your finances</Text>
-        <Text style={{fontSize: 35}}>Needs</Text>
-        <Text style={{fontSize: 25}}>
-          {accountifyUser?.defaultCurrency}{' '}
-          {currencyMasker(spendsObject.needs.remaining.toString())}
-        </Text>
-        <Text style={{fontSize: 25}}>
-          {spendsObject.needs.percentage}% remaining
-        </Text>
-        <Text style={{fontSize: 35}}>Wants</Text>
-        <Text style={{fontSize: 25}}>
-          {accountifyUser?.defaultCurrency}{' '}
-          {currencyMasker(spendsObject.wants.remaining.toString())}
-        </Text>
-        <Text style={{fontSize: 25}}>
-          {spendsObject.wants.percentage}% remaining
-        </Text>
-        <Text style={{fontSize: 35}}>Savings</Text>
-        <Text style={{fontSize: 25}}>
-          {accountifyUser?.defaultCurrency}{' '}
-          {currencyMasker(spendsObject.savings.remaining.toString())}
-        </Text>
-        <Text style={{fontSize: 25}}>
-          {spendsObject.savings.percentage}% remaining
-        </Text>
+        <View
+          style={{
+            backgroundColor: theme.colors.onPrimary,
+            borderRadius: 30,
+            padding: 20,
+          }}>
+          <Text style={{fontSize: 35}}>Needs</Text>
+          <Text style={{fontSize: 25}}>
+            {accountifyUser?.defaultCurrency}{' '}
+            {currencyMasker(spendsObject.needs.remaining.toString())} remaining
+          </Text>
+          <Text style={{fontSize: 25}}>
+            {spendsObject.needs.percentage}% remaining
+          </Text>
+        </View>
+        <View
+          style={{
+            backgroundColor: theme.colors.onPrimary,
+            borderRadius: 30,
+            padding: 20,
+          }}>
+          <Text style={{fontSize: 35}}>Wants</Text>
+          <Text style={{fontSize: 25}}>
+            {accountifyUser?.defaultCurrency}{' '}
+            {currencyMasker(spendsObject.wants.remaining.toString())} remaining
+          </Text>
+          <Text style={{fontSize: 25}}>
+            {spendsObject.wants.percentage}% remaining
+          </Text>
+        </View>
+        <View
+          style={{
+            backgroundColor: theme.colors.onPrimary,
+            borderRadius: 30,
+            padding: 20,
+          }}>
+          <Text style={{fontSize: 35}}>Savings</Text>
+          <Text style={{fontSize: 25}}>
+            {accountifyUser?.defaultCurrency}{' '}
+            {currencyMasker(spendsObject.savings.remaining.toString())}{' '}
+            remaining
+          </Text>
+          <Text style={{fontSize: 25}}>
+            {spendsObject.savings.percentage}% remaining
+          </Text>
+        </View>
       </View>
     )
   ) : (
