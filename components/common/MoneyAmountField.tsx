@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Text, TextInput} from 'react-native-paper';
 import currencyMasker from '../../util/currencyMasker';
@@ -10,8 +10,12 @@ const MoneyAmountField: React.FC<{
   setAmount: Function;
   label: string;
 }> = ({amount, setAmount, label}) => {
-  const [fieldAmount, setFieldAmount] = useState(amount ? amount : '0');
+  const [fieldAmount, setFieldAmount] = useState('0');
   const {windowWidth} = getDimensions();
+
+  useEffect(() => {
+    if (amount) setFieldAmount(amount);
+  }, []);
   return (
     <View
       style={{

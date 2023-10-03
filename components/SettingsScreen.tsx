@@ -28,9 +28,11 @@ const SettingsScreen: React.FC<{
 
   useEffect(() => {
     (async () => {
-      const settings = await getSettings();
-      if (settings.length > 0) {
-        setSettings(settings.item(0));
+      const fetchedSettings = await getSettings();
+      if (fetchedSettings.length > 0) {
+        console.log('Settings DB read', fetchedSettings.item(0));
+        setSettings(fetchedSettings.item(0));
+        console.log('Set settings', settings.monthlyIncome.toString());
         setNewUser(false);
       }
     })();

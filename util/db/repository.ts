@@ -29,7 +29,7 @@ const updateUser = (
 ): Promise<[ResultSet]> | undefined => {
   return db?.executeSql(
     `update AccountifyUser set monthlyIncome = ${updatedUser.monthlyIncome}, needsAllocation = ${updatedUser.needsAllocation}, 
-           wantsAllocation = ${updatedUser.wantsAllocation}, savingsAllocation = ${updatedUser.savingsAllocation}, defaultCurrenct = '${updatedUser.defaultCurrency}'`,
+           wantsAllocation = ${updatedUser.wantsAllocation}, savingsAllocation = ${updatedUser.savingsAllocation}, defaultCurrency = '${updatedUser.defaultCurrency}'`,
     [],
   );
 };

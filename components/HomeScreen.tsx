@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Text, useTheme} from 'react-native-paper';
+import {Button, Text, useTheme} from 'react-native-paper';
 import {dbOps} from '../util/db';
 import {getAccountifyUser, initDatabase} from '../util/db/init';
 import AffirmationButton from './common/AffirmationButton';
@@ -9,6 +9,7 @@ import {getDimensions} from '../util/getDimensions';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
 import currencyMasker from '../util/currencyMasker';
 import {getSpendsObject} from '../util/getSpendsObject';
+import BottomNavigationComponent from './common/BottomNavigationComponent';
 
 const HomeScreen: React.FC<{
   navigation: any;
@@ -71,51 +72,59 @@ const HomeScreen: React.FC<{
           justifyContent: 'space-between',
         }}>
         <Text style={{fontSize: 40}}>Hello, here are your finances</Text>
-        <View
-          style={{
-            backgroundColor: theme.colors.onPrimary,
-            borderRadius: 30,
-            padding: 20,
-          }}>
-          <Text style={{fontSize: 35}}>Needs</Text>
-          <Text style={{fontSize: 25}}>
-            {accountifyUser?.defaultCurrency}{' '}
-            {currencyMasker(spendsObject.needs.remaining.toString())} remaining
-          </Text>
-          <Text style={{fontSize: 25}}>
-            {spendsObject.needs.percentage}% remaining
-          </Text>
+        <View>
+          <View
+            style={{
+              backgroundColor: theme.colors.onPrimary,
+              borderRadius: 30,
+              padding: 20,
+            }}>
+            <Text style={{fontSize: 35}}>Needs</Text>
+            <Text style={{fontSize: 25}}>
+              {accountifyUser?.defaultCurrency}{' '}
+              {currencyMasker(spendsObject.needs.remaining.toString())}{' '}
+              remaining
+            </Text>
+            <Text style={{fontSize: 25}}>
+              {spendsObject.needs.percentage}% remaining
+            </Text>
+          </View>
+          <View
+            style={{
+              backgroundColor: theme.colors.onPrimary,
+              borderRadius: 30,
+              padding: 20,
+            }}>
+            <Text style={{fontSize: 35}}>Wants</Text>
+            <Text style={{fontSize: 25}}>
+              {accountifyUser?.defaultCurrency}{' '}
+              {currencyMasker(spendsObject.wants.remaining.toString())}{' '}
+              remaining
+            </Text>
+            <Text style={{fontSize: 25}}>
+              {spendsObject.wants.percentage}% remaining
+            </Text>
+          </View>
+          <View
+            style={{
+              backgroundColor: theme.colors.onPrimary,
+              borderRadius: 30,
+              padding: 20,
+            }}>
+            <Text style={{fontSize: 35}}>Savings</Text>
+            <Text style={{fontSize: 25}}>
+              {accountifyUser?.defaultCurrency}{' '}
+              {currencyMasker(spendsObject.savings.remaining.toString())}{' '}
+              remaining
+            </Text>
+            <Text style={{fontSize: 25}}>
+              {spendsObject.savings.percentage}% remaining
+            </Text>
+          </View>
         </View>
         <View
-          style={{
-            backgroundColor: theme.colors.onPrimary,
-            borderRadius: 30,
-            padding: 20,
-          }}>
-          <Text style={{fontSize: 35}}>Wants</Text>
-          <Text style={{fontSize: 25}}>
-            {accountifyUser?.defaultCurrency}{' '}
-            {currencyMasker(spendsObject.wants.remaining.toString())} remaining
-          </Text>
-          <Text style={{fontSize: 25}}>
-            {spendsObject.wants.percentage}% remaining
-          </Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: theme.colors.onPrimary,
-            borderRadius: 30,
-            padding: 20,
-          }}>
-          <Text style={{fontSize: 35}}>Savings</Text>
-          <Text style={{fontSize: 25}}>
-            {accountifyUser?.defaultCurrency}{' '}
-            {currencyMasker(spendsObject.savings.remaining.toString())}{' '}
-            remaining
-          </Text>
-          <Text style={{fontSize: 25}}>
-            {spendsObject.savings.percentage}% remaining
-          </Text>
+          style={{position: 'relative', bottom: 0, height: 0.1 * windowHeight}}>
+          <Button onPress={() => navigation.push('Settings')}>Settings</Button>
         </View>
       </View>
     )
