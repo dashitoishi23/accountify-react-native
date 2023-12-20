@@ -53,6 +53,7 @@ const SettingsScreen: React.FC<{
   const theme = useTheme();
 
   const settingsValidator = () => {
+    console.log(settings);
     const totalPercentage =
       settings.needsAllocation +
       settings.wantsAllocation +
@@ -143,10 +144,10 @@ const SettingsScreen: React.FC<{
         label="Wants Allocation"
         type="number"
         placeholder="Enter percentage"
-        setText={(savingsAllocation: string) => {
+        setText={(wantsAllocation: string) => {
           setSettings({
             ...settings,
-            savingsAllocation: parseFloat(savingsAllocation),
+            wantsAllocation: parseFloat(wantsAllocation),
           });
         }}
         text={settings.wantsAllocation.toString()}
@@ -157,10 +158,10 @@ const SettingsScreen: React.FC<{
         label="Savings Allocation"
         type="number"
         placeholder="Enter percentage"
-        setText={(wantsAllocation: string) => {
+        setText={(savingsAllocation: string) => {
           setSettings({
             ...settings,
-            wantsAllocation: parseFloat(wantsAllocation),
+            savingsAllocation: parseFloat(savingsAllocation),
           });
         }}
         text={settings.savingsAllocation.toString()}
