@@ -9,7 +9,7 @@ import {ToastAndroid, View} from 'react-native';
 import DropdownField from './common/DropdownField';
 import {CurrencyList} from '../util/currencylist';
 import {addUser, updateUser} from '../util/db/repository';
-import {useTheme} from 'react-native-paper';
+import {Text, useTheme} from 'react-native-paper';
 import {dbOps} from '../util/db';
 import {getAccountifyUser} from '../util/db/init';
 
@@ -24,18 +24,23 @@ const SettingsScreen: React.FC<{
     defaultCurrency: 'INR',
   });
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   const [newUser, setNewUser] = useState<boolean>(true);
 
   useEffect(() => {
-    (async () => {
-      const fetchedSettings = await getSettings();
+    getSettings().then(fetchedSettings => {
       if (fetchedSettings.length > 0) {
-        console.log('Settings DB read', fetchedSettings.item(0));
-        setSettings(fetchedSettings.item(0));
-        console.log('Set settings', settings.monthlyIncome.toString());
+        const fetched = fetchedSettings.item(0);
+        console.log('fetchedSettings DB read', fetched);
+        setSettings({
+          ...settings,
+          ...fetched,
+        });
         setNewUser(false);
       }
-    })();
+      setIsLoading(false);
+    });
   }, []);
 
   const getSettings = async () => {
@@ -103,7 +108,7 @@ const SettingsScreen: React.FC<{
   };
 
   const {windowHeight} = getDimensions();
-  return (
+  return !isLoading ? (
     <View
       style={{
         flexDirection: 'column',
@@ -180,6 +185,8 @@ const SettingsScreen: React.FC<{
         onPressCallback={async () => await upsertSettings()}
       />
     </View>
+  ) : (
+    <Text>Loading</Text>
   );
 };
 
