@@ -73,6 +73,8 @@ const HomeScreen: React.FC<{
     ) : (
       <View
         style={{
+          paddingLeft: 10,
+          paddingRight: 10,
           flex: 2,
           flexDirection: 'column',
           backgroundColor: theme.colors.background,
@@ -140,7 +142,14 @@ const HomeScreen: React.FC<{
             justifyContent: 'space-evenly',
           }}>
           <Button onPress={() => navigation.push('Settings')}>Settings</Button>
-          <Button onPress={() => navigation.push('Settings')}>Add Spend</Button>
+          <Button
+            onPress={() =>
+              navigation.push('AddSpend', {
+                currentUser: accountifyUser,
+              })
+            }>
+            Add Spend
+          </Button>
           <Button onPress={() => navigation.push('Settings')}>History</Button>
         </View>
       </View>

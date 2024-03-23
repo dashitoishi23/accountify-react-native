@@ -16,6 +16,8 @@ import SplashScreen from 'react-native-splash-screen';
 import HomeScreen from './components/HomeScreen';
 import {Provider as PaperProvider, MD3DarkTheme} from 'react-native-paper';
 import SettingsScreen from './components/SettingsScreen';
+import AddSpendScreen from './components/AddSpendScreen';
+import {View} from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +36,7 @@ const App = (): JSX.Element => {
           }}>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
+          <Stack.Screen name="AddSpend" component={AddSpendScreen} />
         </Stack.Navigator>
       </PaperProvider>
     </NavigationContainer>

@@ -112,6 +112,8 @@ const SettingsScreen: React.FC<{
   return !isLoading ? (
     <View
       style={{
+        paddingLeft: 10,
+        paddingRight: 10,
         display: 'flex',
         flex: 3,
         flexDirection: 'column',
