@@ -80,7 +80,9 @@ const HomeScreen: React.FC<{
           backgroundColor: theme.colors.background,
           justifyContent: 'space-evenly',
         }}>
-        <Text style={{fontSize: 40}}>Hello, here are your finances</Text>
+        <Text style={{fontSize: 35}}>
+          Hello, here are your balances for this month
+        </Text>
         <View
           style={{display: 'flex', justifyContent: 'space-evenly', flex: 2}}>
           <View
@@ -90,13 +92,25 @@ const HomeScreen: React.FC<{
               padding: 20,
             }}>
             <Text style={{fontSize: 35}}>Needs</Text>
-            <Text style={{fontSize: 25}}>
+            <Text
+              style={{
+                fontSize: 25,
+                color: spendsObject.needs.percentage > 0 ? 'white' : 'red',
+              }}>
               {accountifyUser?.defaultCurrency}{' '}
               {currencyMasker(spendsObject.needs.remaining.toString())}{' '}
-              remaining
+              {spendsObject.needs.remaining > 0 ? 'remaining' : 'overspent'}
             </Text>
-            <Text style={{fontSize: 25}}>
-              {spendsObject.needs.percentage}% remaining
+            <Text
+              style={{
+                fontSize: 25,
+                color: spendsObject.needs.percentage > 0 ? 'white' : 'red',
+              }}>
+              {spendsObject.needs.remaining > 0
+                ? `${Math.floor(spendsObject.needs.percentage)}% remaining`
+                : `${Math.abs(
+                    Math.floor(spendsObject.needs.percentage),
+                  )}% overspent`}
             </Text>
           </View>
           <View
@@ -106,13 +120,25 @@ const HomeScreen: React.FC<{
               padding: 20,
             }}>
             <Text style={{fontSize: 35}}>Wants</Text>
-            <Text style={{fontSize: 25}}>
+            <Text
+              style={{
+                fontSize: 25,
+                color: spendsObject.wants.percentage > 0 ? 'white' : 'red',
+              }}>
               {accountifyUser?.defaultCurrency}{' '}
               {currencyMasker(spendsObject.wants.remaining.toString())}{' '}
-              remaining
+              {spendsObject.wants.remaining > 0 ? 'remaining' : 'overspent'}
             </Text>
-            <Text style={{fontSize: 25}}>
-              {spendsObject.wants.percentage}% remaining
+            <Text
+              style={{
+                fontSize: 25,
+                color: spendsObject.wants.percentage > 0 ? 'white' : 'red',
+              }}>
+              {spendsObject.wants.remaining > 0
+                ? `${Math.floor(spendsObject.wants.percentage)}% remaining`
+                : `${Math.abs(
+                    Math.floor(spendsObject.wants.percentage),
+                  )}% overspent`}
             </Text>
           </View>
           <View
@@ -122,13 +148,25 @@ const HomeScreen: React.FC<{
               padding: 20,
             }}>
             <Text style={{fontSize: 35}}>Savings</Text>
-            <Text style={{fontSize: 25}}>
+            <Text
+              style={{
+                fontSize: 25,
+                color: spendsObject.savings.percentage > 0 ? 'white' : 'red',
+              }}>
               {accountifyUser?.defaultCurrency}{' '}
               {currencyMasker(spendsObject.savings.remaining.toString())}{' '}
-              remaining
+              {spendsObject.savings.remaining > 0 ? 'remaining' : 'overspent'}
             </Text>
-            <Text style={{fontSize: 25}}>
-              {spendsObject.savings.percentage}% remaining
+            <Text
+              style={{
+                fontSize: 25,
+                color: spendsObject.savings.percentage > 0 ? 'white' : 'red',
+              }}>
+              {spendsObject.savings.remaining > 0
+                ? `${Math.floor(spendsObject.savings.percentage)}% remaining`
+                : `${Math.abs(
+                    Math.floor(spendsObject.savings.percentage),
+                  )}% overspent`}
             </Text>
           </View>
         </View>

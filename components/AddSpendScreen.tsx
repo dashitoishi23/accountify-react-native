@@ -1,6 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {getSpendsObject} from '../util/getSpendsObject';
-import {View, Text, Switch, GestureResponderEvent} from 'react-native';
+import {
+  View,
+  Text,
+  Switch,
+  GestureResponderEvent,
+  ToastAndroid,
+} from 'react-native';
 import {Button, Checkbox, useTheme} from 'react-native-paper';
 import MoneyAmountField from './common/MoneyAmountField';
 import DropdownField from './common/DropdownField';
@@ -24,7 +30,7 @@ const AddSpendScreen: React.FC<{
     category: 'needs',
     spendTitle: '',
     id: '',
-    recurringSpend: true,
+    recurringSpend: false,
     timeAdded: Date.now(),
   });
   const [spendsObject, setSpendsObject] = useState<any>(null);
@@ -41,13 +47,19 @@ const AddSpendScreen: React.FC<{
 
   const handleSaveSpend = async (e: GestureResponderEvent) => {
     e.preventDefault();
-    console.log(spend);
-    await addSpend({
-      ...spend,
-      id: uuidv4(),
-    });
-
-    navigation.push('Home', {currentUser: route.params.currentUser});
+    if (spend.amount > 0) {
+      await addSpend({
+        ...spend,
+        id: uuidv4(),
+      });
+      navigation.push('Home', {currentUser: route.params.currentUser});
+    } else {
+      ToastAndroid.showWithGravity(
+        'Amount should be greater than 0',
+        ToastAndroid.SHORT,
+        ToastAndroid.BOTTOM,
+      );
+    }
   };
 
   return !isLoading ? (
