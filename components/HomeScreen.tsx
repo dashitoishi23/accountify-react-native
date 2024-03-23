@@ -55,7 +55,14 @@ const HomeScreen: React.FC<{
 
   return !isLoading ? (
     newUser ? (
-      <View style={{backgroundColor: theme.colors.background}}>
+      <View
+        style={{
+          backgroundColor: theme.colors.background,
+          display: 'flex',
+          flex: 3,
+          flexDirection: 'column',
+          justifyContent: 'space-evenly',
+        }}>
         <AffirmationButton
           onPressCallback={() => {
             navigation.navigate('Settings');
@@ -66,13 +73,14 @@ const HomeScreen: React.FC<{
     ) : (
       <View
         style={{
-          flex: 1,
+          flex: 2,
           flexDirection: 'column',
           backgroundColor: theme.colors.background,
-          justifyContent: 'space-between',
+          justifyContent: 'space-evenly',
         }}>
         <Text style={{fontSize: 40}}>Hello, here are your finances</Text>
-        <View>
+        <View
+          style={{display: 'flex', justifyContent: 'space-evenly', flex: 2}}>
           <View
             style={{
               backgroundColor: theme.colors.onPrimary,
@@ -123,8 +131,17 @@ const HomeScreen: React.FC<{
           </View>
         </View>
         <View
-          style={{position: 'relative', bottom: 0, height: 0.1 * windowHeight}}>
+          style={{
+            position: 'relative',
+            bottom: 0,
+            height: 0.1 * windowHeight,
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+          }}>
           <Button onPress={() => navigation.push('Settings')}>Settings</Button>
+          <Button onPress={() => navigation.push('Settings')}>Add Spend</Button>
+          <Button onPress={() => navigation.push('Settings')}>History</Button>
         </View>
       </View>
     )

@@ -27,7 +27,11 @@ const App = (): JSX.Element => {
   return (
     <NavigationContainer theme={DarkTheme}>
       <PaperProvider theme={MD3DarkTheme}>
-        <Stack.Navigator initialRouteName="Home">
+        <Stack.Navigator
+          initialRouteName="Home"
+          screenOptions={{
+            headerShown: false,
+          }}>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />
         </Stack.Navigator>

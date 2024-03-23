@@ -31,15 +31,15 @@ export const getSpendsObject = async (accountifyUser: AccountifyUser) => {
 
   const spendsObject = {
     needs: {
-      remaining: needsTotal || 0,
+      remaining: needsAllocation - needsTotal || 0,
       percentage: ((needsAllocation - needsTotal) / needsAllocation) * 100,
     },
     wants: {
-      remaining: wantsTotal || 0,
+      remaining: wantsAllocation - wantsTotal || 0,
       percentage: ((wantsAllocation - wantsTotal) / wantsAllocation) * 100,
     },
     savings: {
-      remaining: savingsTotal || 0,
+      remaining: savingsAllocation - savingsTotal || 0,
       percentage:
         ((savingsAllocation - savingsTotal) / savingsAllocation) * 100,
     },

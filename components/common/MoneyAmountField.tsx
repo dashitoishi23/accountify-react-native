@@ -21,7 +21,7 @@ const MoneyAmountField: React.FC<{
       style={{
         marginBottom: 0.05 * windowWidth,
       }}>
-      <Text>{label}</Text>
+      <Text style={{fontSize: 15}}>{label}</Text>
       <TextInput
         label="Amount"
         mode="outlined"

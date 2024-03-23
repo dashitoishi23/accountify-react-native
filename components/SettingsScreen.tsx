@@ -112,10 +112,20 @@ const SettingsScreen: React.FC<{
   return !isLoading ? (
     <View
       style={{
+        display: 'flex',
+        flex: 3,
         flexDirection: 'column',
         justifyContent: 'space-evenly',
         backgroundColor: theme.colors.background,
       }}>
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-evenly',
+        }}>
+        <Text style={{fontSize: 30}}>Settings</Text>
+      </View>
       <MoneyAmountField
         amount={settings.monthlyIncome.toString()}
         setAmount={(newAmount: string) =>
