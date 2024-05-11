@@ -15,7 +15,7 @@ import {v4 as uuidv4} from 'uuid';
 import {Spend} from '../util/db/models/spend';
 import TextBox from './common/TextBox';
 import DatePicker from 'react-native-date-picker';
-import currencyMasker from '../util/currencyMasker';
+import {currencyMasker} from '../util/currencyMasker';
 import moment from 'moment';
 import AffirmationButton from './common/AffirmationButton';
 import {addSpend} from '../util/db/repository';

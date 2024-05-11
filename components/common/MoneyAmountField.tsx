@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Text, TextInput} from 'react-native-paper';
-import currencyMasker from '../../util/currencyMasker';
+import {currencyMasker} from '../../util/currencyMasker';
 import {getDimensions} from '../../util/getDimensions';
 
 const MoneyAmountField: React.FC<{

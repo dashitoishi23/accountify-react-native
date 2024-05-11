@@ -7,7 +7,7 @@ import {getAccountifyUser, initDatabase} from '../util/db/init';
 import AffirmationButton from './common/AffirmationButton';
 import {getDimensions} from '../util/getDimensions';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
-import currencyMasker from '../util/currencyMasker';
+import {currencyMasker} from '../util/currencyMasker';
 import {getSpendsObject} from '../util/getSpendsObject';
 import BottomNavigationComponent from './common/BottomNavigationComponent';
 
