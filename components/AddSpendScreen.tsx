@@ -14,7 +14,7 @@ import {spendCategoryList} from '../util/spendCategoryList';
 import {v4 as uuidv4} from 'uuid';
 import {Spend} from '../util/db/models/spend';
 import TextBox from './common/TextBox';
-import DatePicker from 'react-native-date-picker';
+// import DatePicker from 'react-native-date-picker';
 import {currencyMasker} from '../util/currencyMasker';
 import moment from 'moment';
 import AffirmationButton from './common/AffirmationButton';
@@ -138,7 +138,7 @@ const AddSpendScreen: React.FC<{
       <Button onPress={() => setIsDateModalOpen(!isDateModalOpen)}>
         {moment(spend.timeAdded).format('MMMM Do YYYY, h:mm a')}
       </Button>
-      <DatePicker
+      {/* <DatePicker
         modal
         open={isDateModalOpen}
         date={new Date()}
@@ -151,7 +151,7 @@ const AddSpendScreen: React.FC<{
           setIsDateModalOpen(false);
         }}
         onCancel={() => setIsDateModalOpen(false)}
-      />
+      /> */}
       <AffirmationButton text="Save spend" onPressCallback={handleSaveSpend} />
     </View>
   ) : null;

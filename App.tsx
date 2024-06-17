@@ -11,7 +11,6 @@
 import {DarkTheme, NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect} from 'react';
-import SplashScreen from 'react-native-splash-screen';
 
 import HomeScreen from './components/HomeScreen';
 import {Provider as PaperProvider, MD3DarkTheme} from 'react-native-paper';
@@ -22,10 +21,6 @@ import {View} from 'react-native';
 const Stack = createNativeStackNavigator();
 
 const App = (): JSX.Element => {
-  useEffect(() => {
-    SplashScreen.hide();
-  });
-
   return (
     <NavigationContainer theme={DarkTheme}>
       <PaperProvider theme={MD3DarkTheme}>

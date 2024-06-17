@@ -7,7 +7,6 @@ install! 'cocoapods', :deterministic_uuids => false
 target 'Accountify' do
   config = use_native_modules!
 
-  pod 'RNScreens', :path => '../../../node_modules/react-native-screens/'
   pod 'RNGestureHandler', :path => '../../../node_modules/react-native-gesture-handler/'
   pod 'react-native-safe-area-context', :path => '../../../node_modules/react-native-safe-area-context/'
 

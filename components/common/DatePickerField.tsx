@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import DatePicker from 'react-native-date-picker';
+// import DatePicker from 'react-native-date-picker';
 import {Button} from 'react-native-paper';
 
 const DatePickerField: React.FC<{date?: Date; onConfirmHandler: Function}> = ({
@@ -30,7 +30,7 @@ const DatePickerField: React.FC<{date?: Date; onConfirmHandler: Function}> = ({
           minute: '2-digit',
         })}
       </Button>
-      <DatePicker
+      {/* <DatePicker
         modal
         open={isOpen}
         date={fieldDate}
@@ -40,7 +40,7 @@ const DatePickerField: React.FC<{date?: Date; onConfirmHandler: Function}> = ({
           setIsOpen(false);
         }}
         onCancel={() => setIsOpen(false)}
-      />
+      /> */}
     </View>
   );
 };
