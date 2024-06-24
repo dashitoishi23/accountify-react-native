@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
 import {getSpendsObject} from '../util/getSpendsObject';
 import {
@@ -7,14 +8,14 @@ import {
   GestureResponderEvent,
   ToastAndroid,
 } from 'react-native';
-import {Button, Checkbox, useTheme} from 'react-native-paper';
+import {Button, useTheme} from 'react-native-paper';
 import MoneyAmountField from './common/MoneyAmountField';
 import DropdownField from './common/DropdownField';
 import {spendCategoryList} from '../util/spendCategoryList';
 import {v4 as uuidv4} from 'uuid';
 import {Spend} from '../util/db/models/spend';
 import TextBox from './common/TextBox';
-// import DatePicker from 'react-native-date-picker';
+import DatePicker from 'react-native-date-picker';
 import {currencyMasker} from '../util/currencyMasker';
 import moment from 'moment';
 import AffirmationButton from './common/AffirmationButton';
@@ -138,7 +139,7 @@ const AddSpendScreen: React.FC<{
       <Button onPress={() => setIsDateModalOpen(!isDateModalOpen)}>
         {moment(spend.timeAdded).format('MMMM Do YYYY, h:mm a')}
       </Button>
-      {/* <DatePicker
+      <DatePicker
         modal
         open={isDateModalOpen}
         date={new Date()}
@@ -151,7 +152,7 @@ const AddSpendScreen: React.FC<{
           setIsDateModalOpen(false);
         }}
         onCancel={() => setIsDateModalOpen(false)}
-      /> */}
+      />
       <AffirmationButton text="Save spend" onPressCallback={handleSaveSpend} />
     </View>
   ) : null;

@@ -17,10 +17,14 @@ import {Provider as PaperProvider, MD3DarkTheme} from 'react-native-paper';
 import SettingsScreen from './components/SettingsScreen';
 import AddSpendScreen from './components/AddSpendScreen';
 import {View} from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 
 const Stack = createNativeStackNavigator();
 
 const App = (): JSX.Element => {
+  useEffect(() => {
+    SplashScreen.hide();
+  });
   return (
     <NavigationContainer theme={DarkTheme}>
       <PaperProvider theme={MD3DarkTheme}>
