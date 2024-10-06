@@ -8,11 +8,14 @@ let db = dbOps.getDatabaseConnection();
 if (!db) {
   dbOps
     .initiateDBConnection()
-    .then(() => (db = dbOps.getDatabaseConnection()))
+    .then(() => {
+      db = dbOps.getDatabaseConnection();
+    })
     .catch(err => (err));
 }
 
 const getUser = (): Promise<[ResultSet]> | undefined => {
+  console.log({ db })
   return db?.executeSql('select * from AccountifyUser', []);
 };
 

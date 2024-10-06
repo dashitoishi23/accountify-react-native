@@ -2,22 +2,19 @@
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Button, Text, useTheme} from 'react-native-paper';
-import {dbOps} from '../util/db';
-import {getAccountifyUser, initDatabase} from '../util/db/init';
 import AffirmationButton from './common/AffirmationButton';
 import {getDimensions} from '../util/getDimensions';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
 import {currencyMasker} from '../util/currencyMasker';
 import {getSpendsObject} from '../util/getSpendsObject';
-import BottomNavigationComponent from './common/BottomNavigationComponent';
 import { getUser } from '../util/db/repository';
+import { dbOps } from '../util/db';
 
 const HomeScreen: React.FC<{
   navigation: any;
   route: any;
 }> = ({navigation, route}) => {
   const [newUser, setIsNewUser] = useState(true);
-  const [user, setUser] = useState<AccountifyUser>();
   const [isLoading, setIsLoading] = useState(true);
   const [accountifyUser, setAccountifyUser] = useState<AccountifyUser | null>(
     null,
@@ -27,19 +24,17 @@ const HomeScreen: React.FC<{
   const theme = useTheme();
   useEffect(() => {
     (async () => {
-      const user = await getUser();
-      if(user){
-        if(!user.length) setIsNewUser(true);
-        else {
-          if(user[0].rows.length === 0) setIsNewUser(true);
-          else{
-            setUser(user[0].rows.raw()[0]);
+      await dbOps.initiateDBConnection();
+      const existingUser = await getUser();
+      console.log({ existingUser })
+      if(existingUser && existingUser.length > 0){
             setIsNewUser(false);
-            const spends = await getSpendsObject(user[0].rows.raw()[0]);
+            setAccountifyUser(existingUser[0].rows.raw()[0]);
+            const spends = await getSpendsObject(existingUser[0].rows.raw()[0]);
+            console.log({ spends });
             setSpendsObject(spends);
-          }
-        }
       }
+      else setIsNewUser(true);
       setIsLoading(false);
     })();
   }, []);

@@ -17,7 +17,6 @@ let dbInfo: DatabaseConnectionInfo = {
 };
 
 const initiateDBConnection = async (): Promise<boolean> => {
-  ('Entering init db', dbInfo);
   SQLite.enablePromise(true);
   if (!dbInfo || !(dbInfo as DatabaseConnectionInfo).isConnectionOpened) {
     try {

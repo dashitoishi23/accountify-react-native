@@ -136,7 +136,7 @@ const SettingsScreen: React.FC<{
             monthlyIncome: parseFloat(newAmount.split(',').join('')) as number,
           })
         }
-        label="Your monthly earnings"
+        label="Your monthly earnings. The balances on your home screen reset on the 1st of every month"
       />
       <TextBox
         label="Needs Allocation"
