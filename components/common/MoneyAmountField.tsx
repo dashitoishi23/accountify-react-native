@@ -19,7 +19,10 @@ const MoneyAmountField: React.FC<{
     : NativeModules.I18nManager.localeIdentifier;
 
   useEffect(() => {
-    if (amount) handleInputChange(amount);
+    if (amount){
+      handleInputChange(amount);
+      handleMoneyInputChange(amount)
+    }
   }, []);
 
   const handleMoneyInputChange = (text: string) => {

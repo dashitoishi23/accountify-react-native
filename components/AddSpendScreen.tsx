@@ -51,7 +51,7 @@ const AddSpendScreen: React.FC<{
         const existingSpend = await getSpendById(route.params.spendId);
         if(existingSpend && existingSpend.length > 0){
           setSpend(existingSpend[0].rows.raw()[0]);
-          (existingSpend[0].rows.raw()[0])
+          console.log(existingSpend[0].rows.raw()[0])
         }
       }
       setIsLoading(false);
@@ -62,7 +62,6 @@ const AddSpendScreen: React.FC<{
 
   const handleSaveSpend = async (e: GestureResponderEvent) => {
     e.preventDefault();
-    console.log({ spend })
     if(spend.id){
       if(spend.amount > 0){
         await updateSpend({
@@ -156,7 +155,7 @@ const AddSpendScreen: React.FC<{
           });
         }}
       />
-      <View style={{display: 'flex', flexDirection: 'row'}}>
+      {/* <View style={{display: 'flex', flexDirection: 'row'}}>
         <Text style={{color: 'white', fontSize: 20}}>Recurring spend</Text>
         <Switch
           value={spend.recurringSpend}
@@ -167,7 +166,7 @@ const AddSpendScreen: React.FC<{
             });
           }}
         />
-      </View>
+      </View> */}
       <Button onPress={() => setIsDateModalOpen(!isDateModalOpen)}>
         {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
       </Button>
