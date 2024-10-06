@@ -51,6 +51,12 @@ const updateSpend = (existingSpend: Spend): Promise<[ResultSet]> | undefined => 
   );
 }
 
+const deleteSpend = (id: string): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(
+    `delete from Spend where id = '${id}'`, []
+  )
+}
+
 const getSpendByCategory = (
   category: string,
 ): Promise<[ResultSet]> | undefined => {
@@ -80,6 +86,7 @@ export {
   updateUser,
   addSpend,
   updateSpend,
+  deleteSpend,
   getSpendByCategory,
   getSpendById,
   getAllSpends,

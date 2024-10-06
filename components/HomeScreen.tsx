@@ -10,43 +10,37 @@ import {AccountifyUser} from '../util/db/models/accountifyUser';
 import {currencyMasker} from '../util/currencyMasker';
 import {getSpendsObject} from '../util/getSpendsObject';
 import BottomNavigationComponent from './common/BottomNavigationComponent';
+import { getUser } from '../util/db/repository';
 
 const HomeScreen: React.FC<{
   navigation: any;
   route: any;
 }> = ({navigation, route}) => {
   const [newUser, setIsNewUser] = useState(true);
+  const [user, setUser] = useState<AccountifyUser>();
   const [isLoading, setIsLoading] = useState(true);
   const [accountifyUser, setAccountifyUser] = useState<AccountifyUser | null>(
     null,
   );
-  const [date, setDate] = useState(new Date());
   const [spendsObject, setSpendsObject] = useState<any>();
   const {windowHeight, windowWidth} = getDimensions();
   const theme = useTheme();
   useEffect(() => {
     (async () => {
-      if (route.params && route.params.currentUser) {
-        setIsNewUser(false);
-        setAccountifyUser(route.params.currentUser);
-        const spends = await getSpendsObject(route.params.currentUser);
-        setSpendsObject(spends);
-        setIsLoading(false);
-      } else {
-        await dbOps.initiateDBConnection();
-        const dbConnection = dbOps.getDatabaseConnection();
-        await initDatabase(dbConnection);
-        const user = await getAccountifyUser(dbConnection);
-        if (user.length === 0) {
-          setIsNewUser(true);
-        } else {
-          setIsNewUser(false);
-          const spends = await getSpendsObject(user.item(0));
-          setSpendsObject(spends);
-          setAccountifyUser(user.item(0));
+      const user = await getUser();
+      if(user){
+        if(!user.length) setIsNewUser(true);
+        else {
+          if(user[0].rows.length === 0) setIsNewUser(true);
+          else{
+            setUser(user[0].rows.raw()[0]);
+            setIsNewUser(false);
+            const spends = await getSpendsObject(user[0].rows.raw()[0]);
+            setSpendsObject(spends);
+          }
         }
-        setIsLoading(false);
       }
+      setIsLoading(false);
     })();
   }, []);
 

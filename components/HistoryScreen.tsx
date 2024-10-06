@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { View, ScrollView } from 'react-native';
 import { Spend } from '../util/db/models/spend';
-import { getAllSpends, getUser } from '../util/db/repository';
-import { Button, Text, useTheme } from 'react-native-paper';
+import { deleteSpend, getAllSpends, getUser } from '../util/db/repository';
+import { Button, Portal, Text, Modal, useTheme } from 'react-native-paper';
 import { handleInputChange } from '../util/currencyInputHandler';
 import moment from 'moment'
 import { AccountifyUser } from '../util/db/models/accountifyUser';
@@ -10,6 +10,8 @@ import { AccountifyUser } from '../util/db/models/accountifyUser';
 const HistoryScreen: React.FC<{ navigation: any}> = ({navigation}) => {
     const [spends, setSpends] = useState<Spend[]>([]);
     const [settings, setSettings] = useState<AccountifyUser>();
+    const [visible, setVisible] = useState(false);
+    const [idToBeDeleted, setIdToBeDeleted] = useState('');
 
     useEffect(() => {
         (async () => {
@@ -30,6 +32,26 @@ const HistoryScreen: React.FC<{ navigation: any}> = ({navigation}) => {
         })
     }
 
+    function handleDeleteButton(spendId: string){
+        setVisible(true);
+        setIdToBeDeleted(spendId);
+    }
+
+    async function handleModalButtons(removeSpend: boolean){
+        if(removeSpend){
+            await deleteSpend(idToBeDeleted);
+            setSpends(spends.filter(spend => spend.id !== idToBeDeleted))
+            setVisible(false);
+            navigation.push("Home");
+        }
+        else setVisible(false)
+    }
+
+
+    const hideModal = () => setVisible(false);
+
+    const containerStyle = {backgroundColor: 'white', padding: 20, margin: 20};
+
     const theme = useTheme();
     return (
     <ScrollView
@@ -39,6 +61,17 @@ const HistoryScreen: React.FC<{ navigation: any}> = ({navigation}) => {
           backgroundColor: theme.colors.background,
           overflow: 'scroll'
         }}>
+            <Portal>
+                <Modal visible={visible} onDismiss={hideModal} contentContainerStyle={containerStyle}>
+                <Text style={{color: 'black', marginBottom: 20}}>
+                    Are you sure you want to delete this spend?
+                </Text>
+                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly'}}>
+                    <Button onPress={() => handleModalButtons(false)} style={{backgroundColor: 'white'}}>No</Button>
+                    <Button onPress={() => handleModalButtons(true)} style={{backgroundColor: 'red'}}>Yes</Button>
+                </View>
+                </Modal>
+            </Portal>
             <View
                 style={{
                 display: 'flex',
@@ -77,7 +110,7 @@ const HistoryScreen: React.FC<{ navigation: any}> = ({navigation}) => {
                             style={{
                                 fontSize: 25,
                             }}>
-                            {spend.category}
+                            {spend.category.charAt(0).toUpperCase() + spend.category.slice(1)}
                         </Text>
                         <View style={{
                             display: 'flex',
@@ -86,7 +119,7 @@ const HistoryScreen: React.FC<{ navigation: any}> = ({navigation}) => {
                             marginBottom: 20
                         }}>
                             <Button onPress={() => handleEditButton(spend.id)}>Edit</Button>
-                            <Button style={{backgroundColor: 'red'}}>Delete</Button>
+                            <Button onPress={() => handleDeleteButton(spend.id)} style={{backgroundColor: 'red'}}>Delete</Button>
                         </View>
                         </View>
                     </View>
