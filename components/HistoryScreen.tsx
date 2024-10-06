@@ -7,7 +7,7 @@ import { handleInputChange } from '../util/currencyInputHandler';
 import moment from 'moment'
 import { AccountifyUser } from '../util/db/models/accountifyUser';
 
-const HistoryScreen: React.FC = () => {
+const HistoryScreen: React.FC<{ navigation: any}> = ({navigation}) => {
     const [spends, setSpends] = useState<Spend[]>([]);
     const [settings, setSettings] = useState<AccountifyUser>();
 
@@ -22,7 +22,13 @@ const HistoryScreen: React.FC = () => {
              setSpends(userSpends[0].rows.raw());
             }
         })();
-    }, [])
+    }, []);
+
+    function handleEditButton(spendId: string){
+        navigation.push('AddSpend', {
+            spendId
+        })
+    }
 
     const theme = useTheme();
     return (
@@ -79,7 +85,7 @@ const HistoryScreen: React.FC = () => {
                             justifyContent: 'space-around',
                             marginBottom: 20
                         }}>
-                            <Button>Edit</Button>
+                            <Button onPress={() => handleEditButton(spend.id)}>Edit</Button>
                             <Button style={{backgroundColor: 'red'}}>Delete</Button>
                         </View>
                         </View>

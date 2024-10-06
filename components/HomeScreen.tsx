@@ -25,7 +25,6 @@ const HomeScreen: React.FC<{
   const {windowHeight, windowWidth} = getDimensions();
   const theme = useTheme();
   useEffect(() => {
-    console.log('route', route);
     (async () => {
       if (route.params && route.params.currentUser) {
         setIsNewUser(false);
@@ -38,7 +37,6 @@ const HomeScreen: React.FC<{
         const dbConnection = dbOps.getDatabaseConnection();
         await initDatabase(dbConnection);
         const user = await getAccountifyUser(dbConnection);
-        console.log('User', user.length);
         if (user.length === 0) {
           setIsNewUser(true);
         } else {
@@ -48,7 +46,6 @@ const HomeScreen: React.FC<{
           setAccountifyUser(user.item(0));
         }
         setIsLoading(false);
-        console.log('NEW', newUser);
       }
     })();
   }, []);

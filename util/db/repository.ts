@@ -9,7 +9,7 @@ if (!db) {
   dbOps
     .initiateDBConnection()
     .then(() => (db = dbOps.getDatabaseConnection()))
-    .catch(err => console.log(err));
+    .catch(err => (err));
 }
 
 const getUser = (): Promise<[ResultSet]> | undefined => {
@@ -42,6 +42,15 @@ const addSpend = (newSpend: Spend): Promise<[ResultSet]> | undefined => {
   );
 };
 
+const updateSpend = (existingSpend: Spend): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(
+    `update Spend set amount = ${existingSpend.amount}, category = '${existingSpend.category}', spendTitle = '${existingSpend.spendTitle}', 
+        recurringSpend = ${existingSpend.recurringSpend}, dateAdded = ${existingSpend.dateAdded}
+        where id = '${existingSpend.id}'`,
+    [],
+  );
+}
+
 const getSpendByCategory = (
   category: string,
 ): Promise<[ResultSet]> | undefined => {
@@ -70,6 +79,7 @@ export {
   addUser,
   updateUser,
   addSpend,
+  updateSpend,
   getSpendByCategory,
   getSpendById,
   getAllSpends,

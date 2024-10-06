@@ -32,7 +32,6 @@ const SettingsScreen: React.FC<{
     getSettings().then(fetchedSettings => {
       if (fetchedSettings.length > 0) {
         const fetched = fetchedSettings.item(0);
-        console.log('fetchedSettings DB read', fetched);
         setSettings({
           ...settings,
           ...fetched,
@@ -53,7 +52,7 @@ const SettingsScreen: React.FC<{
   const theme = useTheme();
 
   const settingsValidator = () => {
-    console.log(settings);
+    (settings);
     const totalPercentage =
       settings.needsAllocation +
       settings.wantsAllocation +
@@ -104,7 +103,7 @@ const SettingsScreen: React.FC<{
         );
       }
     } catch (err) {
-      console.log(err);
+      (err);
     }
   };
 

@@ -19,7 +19,9 @@ import DatePicker from 'react-native-date-picker';
 import {currencyMasker} from '../util/currencyMasker';
 import moment from 'moment';
 import AffirmationButton from './common/AffirmationButton';
-import {addSpend} from '../util/db/repository';
+import {addSpend, getSpendById, getUser, updateSpend} from '../util/db/repository';
+import { AccountifyUser } from '../util/db/models/accountifyUser';
+import { handleInputChange } from '../util/currencyInputHandler';
 
 const AddSpendScreen: React.FC<{
   navigation: any;
@@ -34,32 +36,62 @@ const AddSpendScreen: React.FC<{
     recurringSpend: false,
     dateAdded: Date.now(),
   });
+  const [user, setUser] = useState<AccountifyUser>();
   const [spendsObject, setSpendsObject] = useState<any>(null);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   useEffect(() => {
-    getSpendsObject(route.params.currentUser).then(spendObject => {
-      setSpendsObject(spendObject);
-      if(route.params.existingSpend) setSpend(route.params.existingSpend);
+    (async () => {
+      const user = await getUser();
+      if(user && user.length > 0){
+        setUser(user[0].rows.raw()[0]);
+        const spendsObject = await getSpendsObject(user[0].rows.raw()[0])
+        setSpendsObject(spendsObject);
+      }
+      if(route.params.spendId){
+        const existingSpend = await getSpendById(route.params.spendId);
+        if(existingSpend && existingSpend.length > 0){
+          setSpend(existingSpend[0].rows.raw()[0]);
+          (existingSpend[0].rows.raw()[0])
+        }
+      }
       setIsLoading(false);
-    });
+    })();
   }, []);
 
   const theme = useTheme();
 
   const handleSaveSpend = async (e: GestureResponderEvent) => {
     e.preventDefault();
-    if (spend.amount > 0) {
-      await addSpend({
-        ...spend,
-        id: uuidv4(),
-      });
-      navigation.push('Home', {currentUser: route.params.currentUser});
-    } else {
-      ToastAndroid.showWithGravity(
-        'Amount should be greater than 0',
-        ToastAndroid.SHORT,
-        ToastAndroid.BOTTOM,
-      );
+    console.log({ spend })
+    if(spend.id){
+      if(spend.amount > 0){
+        await updateSpend({
+          ...spend
+        });
+        navigation.push('Home', {currentUser: user});
+      }
+      else {
+        ToastAndroid.showWithGravity(
+          'Amount should be greater than 0',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+      }
+    }
+    else{
+      if (spend.amount > 0) {
+        await addSpend({
+          ...spend,
+          id: uuidv4(),
+        });
+        navigation.push('Home', {currentUser: user});
+      } else {
+        ToastAndroid.showWithGravity(
+          'Amount should be greater than 0',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+      }
     }
   };
 
@@ -83,7 +115,7 @@ const AddSpendScreen: React.FC<{
         <Text style={{fontSize: 30, color: 'white'}}>Add Spend</Text>
       </View>
       <MoneyAmountField
-        amount={'0'}
+        amount={handleInputChange(spend.amount.toString() || '0')}
         setAmount={(amount: string) => {
           setSpend({
             ...spend,
@@ -108,7 +140,7 @@ const AddSpendScreen: React.FC<{
         <Text
           style={{
             color: 'white',
-          }}>{`${route.params.currentUser.defaultCurrency} ${currencyMasker(
+          }}>{`${user?.defaultCurrency} ${currencyMasker(
           spendsObject[spend.category].remaining.toString(),
         )} available to spend`}</Text>
       </View>

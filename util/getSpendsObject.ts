@@ -1,12 +1,7 @@
 import {
-  addSpend,
-  getSpendByCategory,
   getTotalSpendsByCategory,
 } from './db/repository';
 import 'react-native-get-random-values';
-import {ResultSet} from 'react-native-sqlite-storage';
-import {v4 as uuidv4} from 'uuid';
-import {Spend} from './db/models/spend';
 import {AccountifyUser} from './db/models/accountifyUser';
 
 export const getSpendsObject = async (accountifyUser: AccountifyUser) => {
@@ -44,6 +39,5 @@ export const getSpendsObject = async (accountifyUser: AccountifyUser) => {
         ((savingsAllocation - savingsTotal) / savingsAllocation) * 100,
     },
   };
-
   return spendsObject;
 };

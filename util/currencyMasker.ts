@@ -1,8 +1,8 @@
 export const currencyMasker = (amount: string) => {
   amount = amount.split(',').join('');
   amount = Math.abs(parseInt(amount)).toString(); //avoiding negative numbers
-  console.log('------AMOUNT------', typeof amount);
-  console.log(amount, 'amount');
+  ('------AMOUNT------', typeof amount);
+  (amount, 'amount');
   const parts = amount.split('.');
   const buffer = [];
 
@@ -10,7 +10,7 @@ export const currencyMasker = (amount: string) => {
   while (number.length > 0) {
     buffer.unshift(number.substr(Math.max(0, number.length - 3), 3));
     number = number.substr(0, number.length - 3);
-    console.log({buffer, number});
+    ({buffer, number});
   }
 
   let formattedNumber = '';
@@ -22,7 +22,7 @@ export const currencyMasker = (amount: string) => {
   const decimals = parts[1];
   formattedNumber += '.' + decimals;
 
-  console.log(formattedNumber, 'formatted');
+  (formattedNumber, 'formatted');
 
   return formattedNumber;
 };
