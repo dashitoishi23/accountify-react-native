@@ -4,5 +4,5 @@ export interface Spend {
   category: string;
   spendTitle: string;
   recurringSpend: boolean;
-  timeAdded: number;
+  dateAdded: number;
 }

@@ -32,14 +32,14 @@ const AddSpendScreen: React.FC<{
     spendTitle: '',
     id: '',
     recurringSpend: false,
-    timeAdded: Date.now(),
+    dateAdded: Date.now(),
   });
   const [spendsObject, setSpendsObject] = useState<any>(null);
   const [isDateModalOpen, setIsDateModalOpen] = useState(false);
   useEffect(() => {
-    console.log(route);
     getSpendsObject(route.params.currentUser).then(spendObject => {
       setSpendsObject(spendObject);
+      if(route.params.existingSpend) setSpend(route.params.existingSpend);
       setIsLoading(false);
     });
   }, []);
@@ -137,7 +137,7 @@ const AddSpendScreen: React.FC<{
         />
       </View>
       <Button onPress={() => setIsDateModalOpen(!isDateModalOpen)}>
-        {moment(spend.timeAdded).format('MMMM Do YYYY, h:mm a')}
+        {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
       </Button>
       <DatePicker
         modal
@@ -147,7 +147,7 @@ const AddSpendScreen: React.FC<{
         onConfirm={date => {
           setSpend({
             ...spend,
-            timeAdded: date.getTime(),
+            dateAdded: date.getTime(),
           });
           setIsDateModalOpen(false);
         }}

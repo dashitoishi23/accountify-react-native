@@ -188,7 +188,7 @@ const HomeScreen: React.FC<{
             }>
             Add Spend
           </Button>
-          <Button onPress={() => navigation.push('Settings')}>History</Button>
+          <Button onPress={() => navigation.push('History')}>History</Button>
         </View>
       </View>
     )

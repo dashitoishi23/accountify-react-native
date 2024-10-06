@@ -37,7 +37,7 @@ const updateUser = (
 const addSpend = (newSpend: Spend): Promise<[ResultSet]> | undefined => {
   return db?.executeSql(
     `insert into Spend values ('${newSpend.id}', ${newSpend.amount}, '${newSpend.category}', '${newSpend.spendTitle}', 
-        ${newSpend.recurringSpend}, ${newSpend.timeAdded})`,
+        ${newSpend.recurringSpend}, ${newSpend.dateAdded})`,
     [],
   );
 };
@@ -53,7 +53,7 @@ const getSpendById = (id: string): Promise<[ResultSet]> | undefined => {
 };
 
 const getAllSpends = (): Promise<[ResultSet]> | undefined => {
-  return db?.executeSql(`Select * from Spend`);
+  return db?.executeSql(`Select * from Spend order by dateAdded DESC`);
 };
 
 const getTotalSpendsByCategory = (

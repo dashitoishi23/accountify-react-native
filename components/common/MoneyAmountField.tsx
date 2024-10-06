@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {View, NativeModules, Platform } from 'react-native';
 import {Text, TextInput} from 'react-native-paper';
 import {getDimensions} from '../../util/getDimensions';
+import { handleInputChange } from '../../util/currencyInputHandler';
 
 const MoneyAmountField: React.FC<{
   amount: string | undefined;
@@ -21,15 +22,8 @@ const MoneyAmountField: React.FC<{
     if (amount) handleInputChange(amount);
   }, []);
 
-  const handleInputChange = (text: string) => {
-    // Remove all non-numeric characters except for the decimal point
-    const cleanedValue = text.replace(/[^0-9.]/g, '');
-
-    // Convert to float and format as currency
-    const formattedValue = cleanedValue
-      ? new Intl.NumberFormat(locale.replace('_', '-')).format(parseFloat(cleanedValue))
-      : '';
-
+  const handleMoneyInputChange = (text: string) => {
+    const formattedValue = handleInputChange(text);
     setFieldAmount(formattedValue);
     setAmount(formattedValue);
   };
@@ -47,10 +41,10 @@ const MoneyAmountField: React.FC<{
         style={{
           fontSize: 20,
         }}
-        onChangeText={handleInputChange}
+        onChangeText={handleMoneyInputChange}
       />
     </View>
   );
 };
 
-export default MoneyAmountField;
+export default MoneyAmountField

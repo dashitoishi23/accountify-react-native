@@ -125,6 +125,7 @@ const SettingsScreen: React.FC<{
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-evenly',
+          margin: 40
         }}>
         <Text style={{fontSize: 30}}>Settings</Text>
       </View>
