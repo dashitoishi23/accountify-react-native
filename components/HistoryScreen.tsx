@@ -6,12 +6,14 @@ import { Button, Portal, Text, Modal, useTheme } from 'react-native-paper';
 import { handleInputChange } from '../util/currencyInputHandler';
 import moment from 'moment'
 import { AccountifyUser } from '../util/db/models/accountifyUser';
+import DatePicker from 'react-native-date-picker';
 
 const HistoryScreen: React.FC<{ navigation: any}> = ({navigation}) => {
     const [spends, setSpends] = useState<Spend[]>([]);
     const [settings, setSettings] = useState<AccountifyUser>();
     const [visible, setVisible] = useState(false);
     const [idToBeDeleted, setIdToBeDeleted] = useState('');
+    const [isDateModalOpen, setIsDateModalOpen] = useState(false); 
 
     useEffect(() => {
         (async () => {
@@ -72,6 +74,13 @@ const HistoryScreen: React.FC<{ navigation: any}> = ({navigation}) => {
                 </View>
                 </Modal>
             </Portal>
+            <DatePicker 
+                modal
+                open={isDateModalOpen}
+                date={new Date()}
+                maximumDate={new Date()}
+                onCancel={() => setIsDateModalOpen(false)}
+            />
             <View
                 style={{
                 display: 'flex',

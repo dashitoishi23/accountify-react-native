@@ -97,6 +97,13 @@ const getTotalSpendsByCategoryByCurrentMonth = (
   );
 };
 
+const getFirstSpendMonth = (): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(
+    `select dateAdded from Spend order by dateAdded desc limit 1`,
+    [],
+  );
+}
+
 export {
   getUser,
   addUser,
@@ -108,5 +115,6 @@ export {
   getSpendById,
   getAllSpends,
   getTotalSpendsByCategory,
-  getTotalSpendsByCategoryByCurrentMonth
+  getTotalSpendsByCategoryByCurrentMonth,
+  getFirstSpendMonth
 };
