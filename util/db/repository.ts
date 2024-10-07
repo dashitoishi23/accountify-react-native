@@ -83,6 +83,20 @@ const getTotalSpendsByCategory = (
   );
 };
 
+const getTotalSpendsByCategoryByCurrentMonth = (
+  category: string,
+): Promise<[ResultSet]> | undefined => {
+  const currentDate = new Date()
+  const firstOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+    .getTime();
+  console.log({ currentDate, firstOfMonth });
+  return db?.executeSql(
+    `select sum(amount) as total from Spend where category = ? and dateAdded >= ${firstOfMonth} 
+    and dateAdded <= ${currentDate.getTime()}`,
+    [category],
+  );
+};
+
 export {
   getUser,
   addUser,
@@ -94,4 +108,5 @@ export {
   getSpendById,
   getAllSpends,
   getTotalSpendsByCategory,
+  getTotalSpendsByCategoryByCurrentMonth
 };

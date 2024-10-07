@@ -1,13 +1,13 @@
 import {
-  getTotalSpendsByCategory,
+  getTotalSpendsByCategoryByCurrentMonth,
 } from './db/repository';
 import 'react-native-get-random-values';
 import {AccountifyUser} from './db/models/accountifyUser';
 
 export const getSpendsObject = async (accountifyUser: AccountifyUser) => {
-  const needsSpends = await getTotalSpendsByCategory('needs');
-  const wantsSpends = await getTotalSpendsByCategory('wants');
-  const savingsSpends = await getTotalSpendsByCategory('savings');
+  const needsSpends = await getTotalSpendsByCategoryByCurrentMonth('needs');
+  const wantsSpends = await getTotalSpendsByCategoryByCurrentMonth('wants');
+  const savingsSpends = await getTotalSpendsByCategoryByCurrentMonth('savings');
 
   const needsTotal = !needsSpends ? 0 : needsSpends?.[0].rows.raw()[0]['total'];
   const wantsTotal = !wantsSpends ? 0 : wantsSpends?.[0].rows.raw()[0]['total'];

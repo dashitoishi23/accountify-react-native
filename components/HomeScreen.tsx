@@ -66,7 +66,7 @@ const HomeScreen: React.FC<{
           backgroundColor: theme.colors.background,
           justifyContent: 'space-evenly',
         }}>
-        <Text style={{fontSize: 35}}>
+        <Text style={{fontSize: 35, margin: 40}}>
           Hello, here are your balances for this month
         </Text>
         <View
