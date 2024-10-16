@@ -33,6 +33,7 @@ const App = (): JSX.Element => {
           initialRouteName="Home"
           screenOptions={{
             headerShown: false,
+            orientation: 'portrait',
           }}>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Settings" component={SettingsScreen} />

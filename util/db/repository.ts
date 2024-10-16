@@ -11,11 +11,10 @@ if (!db) {
     .then(() => {
       db = dbOps.getDatabaseConnection();
     })
-    .catch(err => (err));
+    .catch(err => err);
 }
 
 const getUser = (): Promise<[ResultSet]> | undefined => {
-  console.log({ db })
   return db?.executeSql('select * from AccountifyUser', []);
 };
 
@@ -45,40 +44,40 @@ const addSpend = (newSpend: Spend): Promise<[ResultSet]> | undefined => {
   );
 };
 
-const updateSpend = (existingSpend: Spend): Promise<[ResultSet]> | undefined => {
+const updateSpend = (
+  existingSpend: Spend,
+): Promise<[ResultSet]> | undefined => {
   return db?.executeSql(
     `update Spend set amount = ${existingSpend.amount}, category = '${existingSpend.category}', spendTitle = '${existingSpend.spendTitle}', 
         recurringSpend = ${existingSpend.recurringSpend}, dateAdded = ${existingSpend.dateAdded}
         where id = '${existingSpend.id}'`,
     [],
   );
-}
+};
 
 const deleteSpend = (id: string): Promise<[ResultSet]> | undefined => {
-  return db?.executeSql(
-    `delete from Spend where id = '${id}'`, []
-  )
-}
+  return db?.executeSql(`delete from Spend where id = '${id}'`, []);
+};
 
 const getSpendByCategory = (
   category: string,
 ): Promise<[ResultSet]> | undefined => {
-  return db?.executeSql(`Select * from Spend where category = ?`, [category]);
+  return db?.executeSql('Select * from Spend where category = ?', [category]);
 };
 
 const getSpendById = (id: string): Promise<[ResultSet]> | undefined => {
-  return db?.executeSql(`Select * from Spend where id = ?`, [id]);
+  return db?.executeSql('Select * from Spend where id = ?', [id]);
 };
 
 const getAllSpends = (): Promise<[ResultSet]> | undefined => {
-  return db?.executeSql(`Select * from Spend order by dateAdded DESC`);
+  return db?.executeSql('Select * from Spend order by dateAdded DESC');
 };
 
 const getTotalSpendsByCategory = (
   category: string,
 ): Promise<[ResultSet]> | undefined => {
   return db?.executeSql(
-    `select sum(amount) as total from Spend where category = ?`,
+    'select sum(amount) as total from Spend where category = ?',
     [category],
   );
 };
@@ -86,10 +85,13 @@ const getTotalSpendsByCategory = (
 const getTotalSpendsByCategoryByCurrentMonth = (
   category: string,
 ): Promise<[ResultSet]> | undefined => {
-  const currentDate = new Date()
-  const firstOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
-    .getTime();
-  console.log({ currentDate, firstOfMonth });
+  const currentDate = new Date();
+  const firstOfMonth = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    1,
+  ).getTime();
+  console.log({currentDate, firstOfMonth});
   return db?.executeSql(
     `select sum(amount) as total from Spend where category = ? and dateAdded >= ${firstOfMonth} 
     and dateAdded <= ${currentDate.getTime()}`,
@@ -97,12 +99,28 @@ const getTotalSpendsByCategoryByCurrentMonth = (
   );
 };
 
-const getFirstSpendMonth = (): Promise<[ResultSet]> | undefined => {
+const getTotalSpendsInCurrentMonth = (
+  monthNumber: number = new Date().getMonth(),
+): Promise<[ResultSet]> | undefined => {
+  const currentDate = new Date();
+  const firstOfMonth = new Date(
+    currentDate.getFullYear(),
+    monthNumber,
+    1,
+  ).getTime();
   return db?.executeSql(
-    `select dateAdded from Spend order by dateAdded desc limit 1`,
+    `select sum(amount) as total from Spend where dateAdded >= ${firstOfMonth} 
+    and dateAdded <= ${currentDate.getTime()}`,
     [],
   );
-}
+};
+
+const getFirstSpendMonth = (): Promise<[ResultSet]> | undefined => {
+  return db?.executeSql(
+    'select dateAdded from Spend order by dateAdded desc limit 1',
+    [],
+  );
+};
 
 export {
   getUser,
@@ -116,5 +134,6 @@ export {
   getAllSpends,
   getTotalSpendsByCategory,
   getTotalSpendsByCategoryByCurrentMonth,
-  getFirstSpendMonth
+  getTotalSpendsInCurrentMonth,
+  getFirstSpendMonth,
 };

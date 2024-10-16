@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, {useEffect, useState} from 'react';
 import {View} from 'react-native';
@@ -7,8 +8,9 @@ import {getDimensions} from '../util/getDimensions';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
 import {currencyMasker} from '../util/currencyMasker';
 import {getSpendsObject} from '../util/getSpendsObject';
-import { getUser } from '../util/db/repository';
-import { dbOps } from '../util/db';
+import {getUser} from '../util/db/repository';
+import {dbOps} from '../util/db';
+import { initDatabase } from '../util/db/init';
 
 const HomeScreen: React.FC<{
   navigation: any;
@@ -25,16 +27,17 @@ const HomeScreen: React.FC<{
   useEffect(() => {
     (async () => {
       await dbOps.initiateDBConnection();
+      await initDatabase(dbOps.getDatabaseConnection());
       const existingUser = await getUser();
-      console.log({ existingUser })
-      if(existingUser && existingUser.length > 0){
-            setIsNewUser(false);
-            setAccountifyUser(existingUser[0].rows.raw()[0]);
-            const spends = await getSpendsObject(existingUser[0].rows.raw()[0]);
-            console.log({ spends });
-            setSpendsObject(spends);
+      if (existingUser && existingUser[0].rows.length > 0) {
+        setIsNewUser(false);
+        setAccountifyUser(existingUser[0].rows.raw()[0]);
+        const spends = await getSpendsObject(existingUser[0].rows.raw()[0]);
+        console.log({spends});
+        setSpendsObject(spends);
+      } else {
+        setIsNewUser(true);
       }
-      else setIsNewUser(true);
       setIsLoading(false);
     })();
   }, []);
