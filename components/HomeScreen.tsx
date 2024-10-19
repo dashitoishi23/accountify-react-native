@@ -74,7 +74,7 @@ const HomeScreen: React.FC<{
           style={{display: 'flex', justifyContent: 'space-evenly', flex: 2}}>
           <View
             style={{
-              backgroundColor: theme.colors.onPrimary,
+              backgroundColor: theme.colors.onTertiary,
               borderRadius: 30,
               padding: 20,
             }}>
@@ -102,7 +102,7 @@ const HomeScreen: React.FC<{
           </View>
           <View
             style={{
-              backgroundColor: theme.colors.onPrimary,
+              backgroundColor: theme.colors.onTertiary,
               borderRadius: 30,
               padding: 20,
             }}>
@@ -130,7 +130,7 @@ const HomeScreen: React.FC<{
           </View>
           <View
             style={{
-              backgroundColor: theme.colors.onPrimary,
+              backgroundColor: theme.colors.onTertiary,
               borderRadius: 30,
               padding: 20,
             }}>

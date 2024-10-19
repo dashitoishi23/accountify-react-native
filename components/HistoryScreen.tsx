@@ -161,8 +161,8 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
               <View key={i}>
                 <View
                   style={{
-                    backgroundColor: theme.colors.onPrimary,
-                    borderRadius: 10,
+                    backgroundColor: theme.colors.onTertiary,
+                    borderRadius: 30,
                     paddingLeft: 20,
                     marginBottom: 20,
                     paddingTop: 10,
