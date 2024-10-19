@@ -166,6 +166,7 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
                     paddingLeft: 20,
                     marginBottom: 20,
                     paddingTop: 10,
+                    paddingRight: 20,
                   }}>
                   <Text style={{fontSize: 35}}>
                     {spend.spendTitle.length > 0
