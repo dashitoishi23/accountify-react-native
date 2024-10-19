@@ -11,6 +11,7 @@ import {getSpendsObject} from '../util/getSpendsObject';
 import {getUser} from '../util/db/repository';
 import {dbOps} from '../util/db';
 import {initDatabase} from '../util/db/init';
+import {handleInputChange} from '../util/currencyInputHandler';
 
 const HomeScreen: React.FC<{
   navigation: any;
@@ -85,7 +86,11 @@ const HomeScreen: React.FC<{
                 color: spendsObject.needs.percentage > 0 ? 'white' : 'red',
               }}>
               {accountifyUser?.defaultCurrency}{' '}
-              {currencyMasker(spendsObject.needs.remaining.toString())}{' '}
+              {handleInputChange(
+                (
+                  Math.round(spendsObject.needs.remaining * 100) / 100
+                ).toString(),
+              )}{' '}
               {spendsObject.needs.remaining > 0 ? 'remaining' : 'overspent'}
             </Text>
             <Text
@@ -113,7 +118,11 @@ const HomeScreen: React.FC<{
                 color: spendsObject.wants.percentage > 0 ? 'white' : 'red',
               }}>
               {accountifyUser?.defaultCurrency}{' '}
-              {currencyMasker(spendsObject.wants.remaining.toString())}{' '}
+              {handleInputChange(
+                (
+                  Math.round(spendsObject.wants.remaining * 100) / 100
+                ).toString(),
+              )}{' '}
               {spendsObject.wants.remaining > 0 ? 'remaining' : 'overspent'}
             </Text>
             <Text
@@ -141,7 +150,11 @@ const HomeScreen: React.FC<{
                 color: spendsObject.savings.percentage > 0 ? 'white' : 'red',
               }}>
               {accountifyUser?.defaultCurrency}{' '}
-              {currencyMasker(spendsObject.savings.remaining.toString())}{' '}
+              {handleInputChange(
+                (
+                  Math.round(spendsObject.savings.remaining * 100) / 100
+                ).toString(),
+              )}{' '}
               {spendsObject.savings.remaining > 0 ? 'remaining' : 'overspent'}
             </Text>
             <Text

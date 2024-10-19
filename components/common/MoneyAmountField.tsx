@@ -1,9 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState} from 'react';
-import {View, NativeModules, Platform } from 'react-native';
+import {View, NativeModules, Platform} from 'react-native';
 import {Text, TextInput} from 'react-native-paper';
 import {getDimensions} from '../../util/getDimensions';
-import { handleInputChange } from '../../util/currencyInputHandler';
+import {handleInputChange} from '../../util/currencyInputHandler';
 
 const MoneyAmountField: React.FC<{
   amount: string | undefined;
@@ -14,14 +14,14 @@ const MoneyAmountField: React.FC<{
   const {windowWidth} = getDimensions();
 
   const locale: string =
-  Platform.OS === 'ios'
-    ? NativeModules.SettingsManager.settings.AppleLocale
-    : NativeModules.I18nManager.localeIdentifier;
+    Platform.OS === 'ios'
+      ? NativeModules.SettingsManager.settings.AppleLocale
+      : NativeModules.I18nManager.localeIdentifier;
 
   useEffect(() => {
-    if (amount){
+    if (amount) {
       handleInputChange(amount);
-      handleMoneyInputChange(amount)
+      handleMoneyInputChange(amount);
     }
   }, []);
 
@@ -50,4 +50,4 @@ const MoneyAmountField: React.FC<{
   );
 };
 
-export default MoneyAmountField
+export default MoneyAmountField;

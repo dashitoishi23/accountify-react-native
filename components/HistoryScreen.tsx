@@ -154,7 +154,9 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
                 fontSize: 15,
               }}>{`Total spends: ${
               settings?.defaultCurrency
-            } ${handleInputChange(totalMonthSpends.toString())}`}</Text>
+            } ${handleInputChange(
+              (Math.round(totalMonthSpends * 100) / 100).toString(),
+            )}`}</Text>
           </View>
           <ScrollView>
             {spends.map((spend, i) => (
