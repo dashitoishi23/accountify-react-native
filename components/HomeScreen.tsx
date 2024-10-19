@@ -10,7 +10,7 @@ import {currencyMasker} from '../util/currencyMasker';
 import {getSpendsObject} from '../util/getSpendsObject';
 import {getUser} from '../util/db/repository';
 import {dbOps} from '../util/db';
-import { initDatabase } from '../util/db/init';
+import {initDatabase} from '../util/db/init';
 
 const HomeScreen: React.FC<{
   navigation: any;
@@ -46,7 +46,6 @@ const HomeScreen: React.FC<{
     newUser ? (
       <View
         style={{
-          backgroundColor: theme.colors.background,
           display: 'flex',
           flex: 3,
           flexDirection: 'column',
@@ -66,7 +65,6 @@ const HomeScreen: React.FC<{
           paddingRight: 10,
           flex: 2,
           flexDirection: 'column',
-          backgroundColor: theme.colors.background,
           justifyContent: 'space-evenly',
         }}>
         <Text style={{fontSize: 35, margin: 40}}>

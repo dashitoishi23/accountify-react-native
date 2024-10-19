@@ -83,8 +83,6 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
       style={{
         paddingLeft: 10,
         paddingRight: 10,
-        backgroundColor: theme.colors.background,
-        overflow: 'scroll',
       }}>
       <Portal>
         <Modal
@@ -122,91 +120,105 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
         }}>
         <Text style={{fontSize: 30}}>History</Text>
       </View>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          margin: 20,
-          zIndex: 4000,
-        }}>
-        <DropdownField
-          items={historySpendConfig}
-          setItem={(value: string) => setHistoryConfig(value)}
-          placeholderText="How far back do you want to go?"
-          labelText="How far back?"
-          value={historyConfig.toString()}
-        />
-      </View>
-      <View
-        style={{
-          paddingLeft: 10,
-          paddingRight: 10,
-          overflow: 'scroll',
-          margin: 20,
-        }}>
-        <Text
+      {spends && spends.length > 0 ? (
+        <View
           style={{
-            fontSize: 15,
-          }}>{`Total spends: ${settings?.defaultCurrency} ${handleInputChange(
-          totalMonthSpends.toString(),
-        )}`}</Text>
-      </View>
-      <ScrollView>
-        {spends.map((spend, i) => (
-          <View key={i}>
-            <View
-              style={{
-                backgroundColor: theme.colors.onPrimary,
-                borderRadius: 10,
-                paddingLeft: 20,
-                marginBottom: 20,
-                paddingTop: 10,
-              }}>
-              <Text style={{fontSize: 35}}>
-                {spend.spendTitle.length > 0
-                  ? spend.spendTitle
-                  : spend.category}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 25,
-                }}>
-                {`${settings?.defaultCurrency} ${handleInputChange(
-                  spend.amount.toString(),
-                )}`}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 25,
-                }}>
-                {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 25,
-                }}>
-                {spend.category.charAt(0).toUpperCase() +
-                  spend.category.slice(1)}
-              </Text>
-              <View
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-around',
-                  marginBottom: 20,
-                }}>
-                <Button onPress={() => handleEditButton(spend.id)}>Edit</Button>
-                <Button
-                  onPress={() => handleDeleteButton(spend.id)}
-                  style={{backgroundColor: 'red'}}>
-                  Delete
-                </Button>
-              </View>
-            </View>
+            overflow: 'scroll',
+            paddingBottom: 10,
+          }}>
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-evenly',
+              margin: 20,
+              zIndex: 4000,
+            }}>
+            <DropdownField
+              items={historySpendConfig}
+              setItem={(value: string) => setHistoryConfig(value)}
+              placeholderText="How far back do you want to go?"
+              labelText="How far back?"
+              value={historyConfig.toString()}
+            />
           </View>
-        ))}
-      </ScrollView>
+          <View
+            style={{
+              paddingLeft: 10,
+              paddingRight: 10,
+              overflow: 'scroll',
+              margin: 20,
+            }}>
+            <Text
+              style={{
+                fontSize: 15,
+              }}>{`Total spends: ${
+              settings?.defaultCurrency
+            } ${handleInputChange(totalMonthSpends.toString())}`}</Text>
+          </View>
+          <ScrollView>
+            {spends.map((spend, i) => (
+              <View key={i}>
+                <View
+                  style={{
+                    backgroundColor: theme.colors.onPrimary,
+                    borderRadius: 10,
+                    paddingLeft: 20,
+                    marginBottom: 20,
+                    paddingTop: 10,
+                  }}>
+                  <Text style={{fontSize: 35}}>
+                    {spend.spendTitle.length > 0
+                      ? spend.spendTitle
+                      : spend.category.charAt(0).toUpperCase() +
+                        spend.category.slice(1)}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                    }}>
+                    {`${settings?.defaultCurrency} ${handleInputChange(
+                      spend.amount.toString(),
+                    )}`}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                    }}>
+                    {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 25,
+                    }}>
+                    {spend.category.charAt(0).toUpperCase() +
+                      spend.category.slice(1)}
+                  </Text>
+                  <View
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      marginBottom: 20,
+                    }}>
+                    <Button onPress={() => handleEditButton(spend.id)}>
+                      Edit
+                    </Button>
+                    <Button
+                      onPress={() => handleDeleteButton(spend.id)}
+                      style={{backgroundColor: 'red'}}>
+                      Delete
+                    </Button>
+                  </View>
+                </View>
+              </View>
+            ))}
+            <View style={{height: 200}}></View>
+          </ScrollView>
+        </View>
+      ) : (
+        <Text style={{fontSize: 20, textAlign: 'center'}}>No history yet</Text>
+      )}
     </View>
   );
 };

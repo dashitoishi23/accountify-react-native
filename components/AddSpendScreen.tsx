@@ -19,9 +19,14 @@ import DatePicker from 'react-native-date-picker';
 import {currencyMasker} from '../util/currencyMasker';
 import moment from 'moment';
 import AffirmationButton from './common/AffirmationButton';
-import {addSpend, getSpendById, getUser, updateSpend} from '../util/db/repository';
-import { AccountifyUser } from '../util/db/models/accountifyUser';
-import { handleInputChange } from '../util/currencyInputHandler';
+import {
+  addSpend,
+  getSpendById,
+  getUser,
+  updateSpend,
+} from '../util/db/repository';
+import {AccountifyUser} from '../util/db/models/accountifyUser';
+import {handleInputChange} from '../util/currencyInputHandler';
 
 const AddSpendScreen: React.FC<{
   navigation: any;
@@ -42,16 +47,16 @@ const AddSpendScreen: React.FC<{
   useEffect(() => {
     (async () => {
       const user = await getUser();
-      if(user && user.length > 0){
+      if (user && user.length > 0) {
         setUser(user[0].rows.raw()[0]);
-        const spendsObject = await getSpendsObject(user[0].rows.raw()[0])
+        const spendsObject = await getSpendsObject(user[0].rows.raw()[0]);
         setSpendsObject(spendsObject);
       }
-      if(route.params.spendId){
+      if (route.params.spendId) {
         const existingSpend = await getSpendById(route.params.spendId);
-        if(existingSpend && existingSpend.length > 0){
+        if (existingSpend && existingSpend.length > 0) {
           setSpend(existingSpend[0].rows.raw()[0]);
-          console.log(existingSpend[0].rows.raw()[0])
+          console.log(existingSpend[0].rows.raw()[0]);
         }
       }
       setIsLoading(false);
@@ -62,22 +67,20 @@ const AddSpendScreen: React.FC<{
 
   const handleSaveSpend = async (e: GestureResponderEvent) => {
     e.preventDefault();
-    if(spend.id){
-      if(spend.amount > 0){
+    if (spend.id) {
+      if (spend.amount > 0) {
         await updateSpend({
-          ...spend
+          ...spend,
         });
         navigation.push('Home', {currentUser: user});
-      }
-      else {
+      } else {
         ToastAndroid.showWithGravity(
           'Amount should be greater than 0',
           ToastAndroid.SHORT,
           ToastAndroid.BOTTOM,
         );
       }
-    }
-    else{
+    } else {
       if (spend.amount > 0) {
         await addSpend({
           ...spend,
@@ -141,7 +144,11 @@ const AddSpendScreen: React.FC<{
             color: 'white',
           }}>{`${user?.defaultCurrency} ${currencyMasker(
           spendsObject[spend.category].remaining.toString(),
-        )} available to spend`}</Text>
+        )} ${
+          spendsObject[spend.category].remaining < 0
+            ? 'overspent'
+            : 'available to spend'
+        }`}</Text>
       </View>
       <TextBox
         label="Give the spend a name"

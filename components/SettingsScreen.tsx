@@ -117,7 +117,6 @@ const SettingsScreen: React.FC<{
         flex: 3,
         flexDirection: 'column',
         justifyContent: 'space-evenly',
-        backgroundColor: theme.colors.background,
       }}>
       <View
         style={{
