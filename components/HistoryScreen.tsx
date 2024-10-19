@@ -5,6 +5,10 @@ import {Spend} from '../util/db/models/spend';
 import {
   deleteSpend,
   getAllSpends,
+  getAllSpendsByMonth,
+  getFirstSpendMonth,
+  getHistoricalSpends,
+  getHistoricalTotalSpends,
   getTotalSpendsInCurrentMonth,
   getUser,
 } from '../util/db/repository';
@@ -12,6 +16,9 @@ import {Button, Portal, Text, Modal, useTheme} from 'react-native-paper';
 import {handleInputChange} from '../util/currencyInputHandler';
 import moment from 'moment';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
+import DropdownField from './common/DropdownField';
+import {historySpendConfig} from '../util/historySpendConfig';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [spends, setSpends] = useState<Spend[]>([]);
@@ -19,21 +26,30 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [visible, setVisible] = useState(false);
   const [idToBeDeleted, setIdToBeDeleted] = useState('');
   const [totalMonthSpends, setTotalMonthSpends] = useState(0);
+  const [currentMonth] = useState(new Date().getMonth());
+  const [historyConfig, setHistoryConfig] = useState('0');
 
   useEffect(() => {
     (async () => {
       const userSettings = await getUser();
-      const totalSpends = await getTotalSpendsInCurrentMonth();
+      const totalSpends =
+        historyConfig === '0'
+          ? await getTotalSpendsInCurrentMonth()
+          : await getHistoricalTotalSpends(parseInt(historyConfig));
       if (userSettings && userSettings.length > 0) {
         setSettings(userSettings[0].rows.raw()[0]);
       }
-      const userSpends = await getAllSpends();
+      const userSpends =
+        historyConfig === '0'
+          ? await getAllSpendsByMonth(currentMonth)
+          : await getHistoricalSpends(parseInt(historyConfig));
       if (userSpends && userSpends.length > 0 && totalSpends) {
         setSpends(userSpends[0].rows.raw());
+        console.log({historyConfig, spends: userSpends[0].rows.raw()});
         setTotalMonthSpends(totalSpends[0].rows.raw()[0].total || 0);
       }
     })();
-  }, []);
+  }, [historyConfig]);
 
   function handleEditButton(spendId: string) {
     navigation.push('AddSpend', {
@@ -63,7 +79,7 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
   const theme = useTheme();
   return (
-    <ScrollView
+    <View
       style={{
         paddingLeft: 10,
         paddingRight: 10,
@@ -112,65 +128,86 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
           flexDirection: 'row',
           justifyContent: 'space-evenly',
           margin: 20,
+          zIndex: 4000,
+        }}>
+        <DropdownField
+          items={historySpendConfig}
+          setItem={(value: string) => setHistoryConfig(value)}
+          placeholderText="How far back do you want to go?"
+          labelText="How far back?"
+          value={historyConfig.toString()}
+        />
+      </View>
+      <View
+        style={{
+          paddingLeft: 10,
+          paddingRight: 10,
+          overflow: 'scroll',
+          margin: 20,
         }}>
         <Text
           style={{
             fontSize: 15,
-          }}>{`Total spends this month: ${
-          settings?.defaultCurrency
-        } ${handleInputChange(totalMonthSpends.toString())}`}</Text>
+          }}>{`Total spends: ${settings?.defaultCurrency} ${handleInputChange(
+          totalMonthSpends.toString(),
+        )}`}</Text>
       </View>
-      {spends.map((spend, i) => (
-        <View key={i}>
-          <View
-            style={{
-              backgroundColor: theme.colors.onPrimary,
-              borderRadius: 10,
-              paddingLeft: 20,
-              marginBottom: 20,
-              paddingTop: 10,
-            }}>
-            <Text style={{fontSize: 35}}>
-              {spend.spendTitle.length > 0 ? spend.spendTitle : spend.category}
-            </Text>
-            <Text
-              style={{
-                fontSize: 25,
-              }}>
-              {`${settings?.defaultCurrency} ${handleInputChange(
-                spend.amount.toString(),
-              )}`}
-            </Text>
-            <Text
-              style={{
-                fontSize: 25,
-              }}>
-              {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
-            </Text>
-            <Text
-              style={{
-                fontSize: 25,
-              }}>
-              {spend.category.charAt(0).toUpperCase() + spend.category.slice(1)}
-            </Text>
+      <ScrollView>
+        {spends.map((spend, i) => (
+          <View key={i}>
             <View
               style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-around',
+                backgroundColor: theme.colors.onPrimary,
+                borderRadius: 10,
+                paddingLeft: 20,
                 marginBottom: 20,
+                paddingTop: 10,
               }}>
-              <Button onPress={() => handleEditButton(spend.id)}>Edit</Button>
-              <Button
-                onPress={() => handleDeleteButton(spend.id)}
-                style={{backgroundColor: 'red'}}>
-                Delete
-              </Button>
+              <Text style={{fontSize: 35}}>
+                {spend.spendTitle.length > 0
+                  ? spend.spendTitle
+                  : spend.category}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 25,
+                }}>
+                {`${settings?.defaultCurrency} ${handleInputChange(
+                  spend.amount.toString(),
+                )}`}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 25,
+                }}>
+                {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 25,
+                }}>
+                {spend.category.charAt(0).toUpperCase() +
+                  spend.category.slice(1)}
+              </Text>
+              <View
+                style={{
+                  display: 'flex',
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  marginBottom: 20,
+                }}>
+                <Button onPress={() => handleEditButton(spend.id)}>Edit</Button>
+                <Button
+                  onPress={() => handleDeleteButton(spend.id)}
+                  style={{backgroundColor: 'red'}}>
+                  Delete
+                </Button>
+              </View>
             </View>
           </View>
-        </View>
-      ))}
-    </ScrollView>
+        ))}
+      </ScrollView>
+    </View>
   );
 };
 

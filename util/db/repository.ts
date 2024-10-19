@@ -122,6 +122,61 @@ const getFirstSpendMonth = (): Promise<[ResultSet]> | undefined => {
   );
 };
 
+const getAllSpendsByMonth = (
+  monthNumber: number = new Date().getMonth(),
+): Promise<[ResultSet]> | undefined => {
+  const currentDate = new Date();
+  const firstOfMonth = new Date(
+    currentDate.getFullYear(),
+    monthNumber,
+    1,
+  ).getTime();
+  return db?.executeSql(
+    `Select * from Spend where dateAdded >= ${firstOfMonth} and dateAdded <= ${currentDate.getTime()} order by dateAdded DESC`,
+  );
+};
+
+const getHistoricalSpends = (
+  config: number,
+): Promise<[ResultSet]> | undefined => {
+  const currentDate = new Date().getTime();
+  return db?.executeSql(
+    `Select * from Spend where dateAdded >= ${getFirstDate(
+      config,
+      currentDate,
+    )} and dateAdded <= ${currentDate} order by dateAdded DESC`,
+    [],
+  );
+};
+
+const getHistoricalTotalSpends = (
+  config: number,
+): Promise<[ResultSet]> | undefined => {
+  const currentDate = new Date().getTime();
+  console.log({currentDate, firstDate: getFirstDate(config, currentDate)});
+  return db?.executeSql(
+    `Select sum(amount) as total from Spend where dateAdded >= ${getFirstDate(
+      config,
+      currentDate,
+    )} and dateAdded <= ${currentDate} order by dateAdded DESC`,
+    [],
+  );
+};
+
+const getFirstDate = (config: number, currentDate: number) => {
+  const monthInMs = 30 * 24 * 60 * 60 * 1000;
+  switch (config) {
+    case 1:
+      return new Date(currentDate - monthInMs * 1).getTime();
+    case 3:
+      return new Date(currentDate - monthInMs * 3).getTime();
+    case 6:
+      return new Date(currentDate - monthInMs * 6).getTime();
+    case 12:
+      return new Date(currentDate - monthInMs * 12).getTime();
+  }
+};
+
 export {
   getUser,
   addUser,
@@ -136,4 +191,7 @@ export {
   getTotalSpendsByCategoryByCurrentMonth,
   getTotalSpendsInCurrentMonth,
   getFirstSpendMonth,
+  getAllSpendsByMonth,
+  getHistoricalSpends,
+  getHistoricalTotalSpends,
 };
