@@ -40,11 +40,13 @@ const MoneyAmountField: React.FC<{
         label="Amount"
         mode="outlined"
         keyboardType="decimal-pad"
-        value={fieldAmount}
+        value={fieldAmount === '0' ? '' : fieldAmount}
+        placeholder="0"
         style={{
           fontSize: 20,
         }}
-        onChangeText={handleMoneyInputChange}
+        onChangeText={setFieldAmount}
+        onBlur={() => handleMoneyInputChange(fieldAmount)}
       />
     </View>
   );
