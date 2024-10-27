@@ -22,6 +22,7 @@ const SettingsScreen: React.FC<{
     wantsAllocation: 30,
     savingsAllocation: 20,
     defaultCurrency: 'INR',
+    startDate: 1,
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -89,6 +90,7 @@ const SettingsScreen: React.FC<{
     try {
       const {error, message} = settingsValidator();
       if (!error) {
+        console.log(newUser);
         if (newUser) {
           await addUser(settings);
         } else {
@@ -162,7 +164,7 @@ const SettingsScreen: React.FC<{
           });
         }}
         text={settings.wantsAllocation.toString()}
-        bottomText="Wants suggests spends that are targetted towards lifestyle, indulegment etc. Ex. subscriptions. Suggested: 30%"
+        bottomText="Wants suggests spends that are targetted towards lifestyle, indulgement etc. Ex. subscriptions. Suggested: 30%"
         marginBottom={0.05 * windowHeight}
       />
       <TextBox
@@ -177,6 +179,20 @@ const SettingsScreen: React.FC<{
         }}
         text={settings.savingsAllocation.toString()}
         bottomText="Savings suggests spends that are made towards your future and/or current savings. Ex. investments. Suggested: 20%"
+        marginBottom={0.05 * windowHeight}
+      />
+      <TextBox
+        label="Start of month"
+        type="number"
+        placeholder="Enter day of month"
+        setText={(startDate: string) => {
+          setSettings({
+            ...settings,
+            startDate: parseFloat(startDate),
+          });
+        }}
+        text={settings.startDate.toString()}
+        bottomText="The day of the month which resets your monthly balances, like your payday"
         marginBottom={0.05 * windowHeight}
       />
       <DropdownField

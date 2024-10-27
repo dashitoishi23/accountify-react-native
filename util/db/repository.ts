@@ -21,7 +21,7 @@ const getUser = (): Promise<[ResultSet]> | undefined => {
 const addUser = (newUser: AccountifyUser): Promise<[ResultSet]> | undefined => {
   return db?.executeSql(
     `insert into AccountifyUser values (${newUser.monthlyIncome}, ${newUser.needsAllocation}, 
-            ${newUser.wantsAllocation}, ${newUser.savingsAllocation}, '${newUser.defaultCurrency}')`,
+            ${newUser.wantsAllocation}, ${newUser.savingsAllocation}, '${newUser.defaultCurrency}', '${newUser.startDate}')`,
     [],
   );
 };
@@ -84,12 +84,13 @@ const getTotalSpendsByCategory = (
 
 const getTotalSpendsByCategoryByCurrentMonth = (
   category: string,
+  user: AccountifyUser,
 ): Promise<[ResultSet]> | undefined => {
   const currentDate = new Date();
   const firstOfMonth = new Date(
     currentDate.getFullYear(),
     currentDate.getMonth(),
-    1,
+    user.startDate ? user.startDate : 1,
   ).getTime();
   console.log({currentDate, firstOfMonth});
   return db?.executeSql(
@@ -99,14 +100,17 @@ const getTotalSpendsByCategoryByCurrentMonth = (
   );
 };
 
-const getTotalSpendsInCurrentMonth = (
+const getTotalSpendsInCurrentMonth = async (
   monthNumber: number = new Date().getMonth(),
-): Promise<[ResultSet]> | undefined => {
+): Promise<Promise<[ResultSet]> | undefined> => {
+  const userData = await getUser();
+  let user: AccountifyUser | undefined;
+  if (userData && userData.length) user = userData[0].rows.raw()[0];
   const currentDate = new Date();
   const firstOfMonth = new Date(
     currentDate.getFullYear(),
     monthNumber,
-    1,
+    user ? user.startDate : 1,
   ).getTime();
   return db?.executeSql(
     `select sum(amount) as total from Spend where dateAdded >= ${firstOfMonth} 
@@ -122,15 +126,19 @@ const getFirstSpendMonth = (): Promise<[ResultSet]> | undefined => {
   );
 };
 
-const getAllSpendsByMonth = (
+const getAllSpendsByMonth = async (
   monthNumber: number = new Date().getMonth(),
-): Promise<[ResultSet]> | undefined => {
+): Promise<[ResultSet] | undefined> => {
+  const userData = await getUser();
+  let user: AccountifyUser | undefined;
+  if (userData && userData.length) user = userData[0].rows.raw()[0];
   const currentDate = new Date();
   const firstOfMonth = new Date(
     currentDate.getFullYear(),
     monthNumber,
-    1,
+    user && user.startDate !== 1 ? user.startDate : 1,
   ).getTime();
+  console.log(firstOfMonth);
   return db?.executeSql(
     `Select * from Spend where dateAdded >= ${firstOfMonth} and dateAdded <= ${currentDate.getTime()} order by dateAdded DESC`,
   );
@@ -138,29 +146,32 @@ const getAllSpendsByMonth = (
 
 const getHistoricalSpends = (
   config: number,
-): Promise<[ResultSet]> | undefined => {
+): Promise<[ResultSet] | undefined> => {
   const currentDate = new Date().getTime();
-  return db?.executeSql(
-    `Select * from Spend where dateAdded >= ${getFirstDate(
-      config,
-      currentDate,
-    )} and dateAdded <= ${currentDate} order by dateAdded DESC`,
-    [],
-  );
+  return config !== 0
+    ? db?.executeSql(
+        `Select * from Spend where dateAdded >= ${getFirstDate(
+          config,
+          currentDate,
+        )} and dateAdded <= ${currentDate} order by dateAdded DESC`,
+        [],
+      )
+    : getAllSpendsByMonth();
 };
 
-const getHistoricalTotalSpends = (
+const getHistoricalTotalSpends = async (
   config: number,
-): Promise<[ResultSet]> | undefined => {
+): Promise<Promise<[ResultSet]> | undefined> => {
   const currentDate = new Date().getTime();
-  console.log({currentDate, firstDate: getFirstDate(config, currentDate)});
-  return db?.executeSql(
-    `Select sum(amount) as total from Spend where dateAdded >= ${getFirstDate(
-      config,
-      currentDate,
-    )} and dateAdded <= ${currentDate} order by dateAdded DESC`,
-    [],
-  );
+  return config !== 0
+    ? db?.executeSql(
+        `Select sum(amount) as total from Spend where dateAdded >= ${getFirstDate(
+          config,
+          currentDate,
+        )} and dateAdded <= ${currentDate} order by dateAdded DESC`,
+        [],
+      )
+    : getTotalSpendsInCurrentMonth();
 };
 
 const getFirstDate = (config: number, currentDate: number) => {

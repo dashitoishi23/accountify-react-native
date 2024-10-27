@@ -4,7 +4,7 @@ export const initDatabase = (db: SQLiteDatabase): Promise<Transaction> => {
   return (db as SQLiteDatabase).transaction((tx: Transaction) => {
     tx.executeSql(
       'create table if not exists AccountifyUser (monthlyIncome float, needsAllocation float, wantsAllocation float,\
-                  savingsAllocation float, defaultCurrency varchar(3))',
+                  savingsAllocation float, defaultCurrency varchar(3), startDate int default 1)',
       [],
     );
 

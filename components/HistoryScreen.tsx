@@ -4,9 +4,7 @@ import {View, ScrollView} from 'react-native';
 import {Spend} from '../util/db/models/spend';
 import {
   deleteSpend,
-  getAllSpends,
   getAllSpendsByMonth,
-  getFirstSpendMonth,
   getHistoricalSpends,
   getHistoricalTotalSpends,
   getTotalSpendsInCurrentMonth,
@@ -18,7 +16,7 @@ import moment from 'moment';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
 import DropdownField from './common/DropdownField';
 import {historySpendConfig} from '../util/historySpendConfig';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {parse} from 'uuid';
 
 const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [spends, setSpends] = useState<Spend[]>([]);
@@ -26,23 +24,19 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [visible, setVisible] = useState(false);
   const [idToBeDeleted, setIdToBeDeleted] = useState('');
   const [totalMonthSpends, setTotalMonthSpends] = useState(0);
-  const [currentMonth] = useState(new Date().getMonth());
   const [historyConfig, setHistoryConfig] = useState('0');
 
   useEffect(() => {
     (async () => {
       const userSettings = await getUser();
-      const totalSpends =
-        historyConfig === '0'
-          ? await getTotalSpendsInCurrentMonth()
-          : await getHistoricalTotalSpends(parseInt(historyConfig));
+      const totalSpends = await getHistoricalTotalSpends(
+        parseInt(historyConfig),
+      );
       if (userSettings && userSettings.length > 0) {
         setSettings(userSettings[0].rows.raw()[0]);
       }
-      const userSpends =
-        historyConfig === '0'
-          ? await getAllSpendsByMonth(currentMonth)
-          : await getHistoricalSpends(parseInt(historyConfig));
+      const userSpends = await getHistoricalSpends(parseInt(historyConfig));
+      console.log(userSpends);
       if (userSpends && userSpends.length > 0 && totalSpends) {
         setSpends(userSpends[0].rows.raw());
         console.log({historyConfig, spends: userSpends[0].rows.raw()});
