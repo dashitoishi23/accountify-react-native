@@ -22,7 +22,7 @@ const SettingsScreen: React.FC<{
     wantsAllocation: 30,
     savingsAllocation: 20,
     defaultCurrency: 'INR',
-    startDate: 1,
+    defaultStartDate: 1,
   });
 
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -188,10 +188,10 @@ const SettingsScreen: React.FC<{
         setText={(startDate: string) => {
           setSettings({
             ...settings,
-            startDate: parseFloat(startDate),
+            defaultStartDate: parseFloat(startDate),
           });
         }}
-        text={settings.startDate.toString()}
+        text={settings.defaultStartDate.toString()}
         bottomText="The day of the month which resets your monthly balances, like your payday"
         marginBottom={0.05 * windowHeight}
       />

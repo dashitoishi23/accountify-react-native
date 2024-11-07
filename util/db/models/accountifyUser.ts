@@ -4,5 +4,5 @@ export interface AccountifyUser {
   wantsAllocation: number;
   savingsAllocation: number;
   defaultCurrency: string;
-  startDate: number;
+  defaultStartDate: number;
 }
