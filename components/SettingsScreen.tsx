@@ -5,7 +5,13 @@ import {AccountifyUser} from '../util/db/models/accountifyUser';
 import AffirmationButton from './common/AffirmationButton';
 import TextBox from './common/TextBox';
 import {getDimensions} from '../util/getDimensions';
-import {KeyboardAvoidingView, Platform, ToastAndroid, View} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  ToastAndroid,
+  View,
+} from 'react-native';
 import DropdownField from './common/DropdownField';
 import {CurrencyList} from '../util/currencylist';
 import {addUser, updateUser} from '../util/db/repository';
@@ -112,26 +118,24 @@ const SettingsScreen: React.FC<{
 
   const {windowHeight} = getDimensions();
   return !isLoading ? (
-    <View
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{
         paddingLeft: 10,
         paddingRight: 10,
         display: 'flex',
-        flex: 3,
-        flexDirection: 'column',
-        justifyContent: 'space-evenly',
+        flex: 1,
       }}>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          margin: 40,
-        }}>
-        <Text style={{fontSize: 30}}>Settings</Text>
-      </View>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+      <ScrollView>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            margin: 40,
+          }}>
+          <Text style={{fontSize: 30}}>Settings</Text>
+        </View>
         <MoneyAmountField
           amount={handleInputChange(settings.monthlyIncome.toString())}
           setAmount={(newAmount: string) =>
@@ -144,81 +148,81 @@ const SettingsScreen: React.FC<{
           }
           label="Your monthly earnings"
         />
-      </KeyboardAvoidingView>
-      <TextBox
-        label="Needs Allocation"
-        type="number"
-        placeholder="Enter percentage"
-        setText={(needsAllocation: string) => {
-          setSettings({
-            ...settings,
-            needsAllocation: parseFloat(needsAllocation),
-          });
-        }}
-        text={settings.needsAllocation.toString()}
-        bottomText="Needs suggests spends that are towards the necessities of life. Suggested: 50%"
-        marginBottom={0.05 * windowHeight}
-      />
-      <TextBox
-        label="Wants Allocation"
-        type="number"
-        placeholder="Enter percentage"
-        setText={(wantsAllocation: string) => {
-          setSettings({
-            ...settings,
-            wantsAllocation: parseFloat(wantsAllocation),
-          });
-        }}
-        text={settings.wantsAllocation.toString()}
-        bottomText="Wants suggests spends that are targetted towards lifestyle, indulgement etc. Ex. subscriptions. Suggested: 30%"
-        marginBottom={0.05 * windowHeight}
-      />
-      <TextBox
-        label="Savings Allocation"
-        type="number"
-        placeholder="Enter percentage"
-        setText={(savingsAllocation: string) => {
-          setSettings({
-            ...settings,
-            savingsAllocation: parseFloat(savingsAllocation),
-          });
-        }}
-        text={settings.savingsAllocation.toString()}
-        bottomText="Savings suggests spends that are made towards your future and/or current savings. Ex. investments. Suggested: 20%"
-        marginBottom={0.05 * windowHeight}
-      />
-      <TextBox
-        label="Start of month"
-        type="number"
-        placeholder="Enter day of month"
-        setText={(startDate: string) => {
-          setSettings({
-            ...settings,
-            defaultStartDate: parseFloat(startDate),
-          });
-        }}
-        text={settings.defaultStartDate.toString()}
-        bottomText="The day of the month which resets your monthly balances, like your payday"
-        marginBottom={0.05 * windowHeight}
-      />
-      <DropdownField
-        items={CurrencyList}
-        setItem={(newValue: any) =>
-          setSettings({
-            ...settings,
-            defaultCurrency: newValue,
-          })
-        }
-        placeholderText="Select default currency"
-        marginBottom={0.05 * windowHeight}
-        labelText="Default currency"
-        value={settings.defaultCurrency}
-      />
-      <AffirmationButton
-        text="Save settings"
-        onPressCallback={async () => await upsertSettings()}
-      />
-    </View>
+        <TextBox
+          label="Needs Allocation"
+          type="number"
+          placeholder="Enter percentage"
+          setText={(needsAllocation: string) => {
+            setSettings({
+              ...settings,
+              needsAllocation: parseFloat(needsAllocation),
+            });
+          }}
+          text={settings.needsAllocation.toString()}
+          bottomText="Needs suggests spends that are towards the necessities of life. Suggested: 50%"
+          marginBottom={0.05 * windowHeight}
+        />
+        <TextBox
+          label="Wants Allocation"
+          type="number"
+          placeholder="Enter percentage"
+          setText={(wantsAllocation: string) => {
+            setSettings({
+              ...settings,
+              wantsAllocation: parseFloat(wantsAllocation),
+            });
+          }}
+          text={settings.wantsAllocation.toString()}
+          bottomText="Wants suggests spends that are targetted towards lifestyle, indulgement etc. Ex. subscriptions. Suggested: 30%"
+          marginBottom={0.05 * windowHeight}
+        />
+        <TextBox
+          label="Savings Allocation"
+          type="number"
+          placeholder="Enter percentage"
+          setText={(savingsAllocation: string) => {
+            setSettings({
+              ...settings,
+              savingsAllocation: parseFloat(savingsAllocation),
+            });
+          }}
+          text={settings.savingsAllocation.toString()}
+          bottomText="Savings suggests spends that are made towards your future and/or current savings. Ex. investments. Suggested: 20%"
+          marginBottom={0.05 * windowHeight}
+        />
+        <TextBox
+          label="Start of month"
+          type="number"
+          placeholder="Enter day of month"
+          setText={(startDate: string) => {
+            setSettings({
+              ...settings,
+              defaultStartDate: parseFloat(startDate),
+            });
+          }}
+          text={settings.defaultStartDate.toString()}
+          bottomText="The day of the month which resets your monthly balances, like your payday"
+          marginBottom={0.05 * windowHeight}
+        />
+        <DropdownField
+          items={CurrencyList}
+          setItem={(newValue: any) =>
+            setSettings({
+              ...settings,
+              defaultCurrency: newValue,
+            })
+          }
+          placeholderText="Select default currency"
+          marginBottom={0.05 * windowHeight}
+          labelText="Default currency"
+          value={settings.defaultCurrency}
+        />
+        <AffirmationButton
+          text="Save settings"
+          onPressCallback={async () => await upsertSettings()}
+        />
+      </ScrollView>
+    </KeyboardAvoidingView>
   ) : (
     <Text>Loading</Text>
   );
