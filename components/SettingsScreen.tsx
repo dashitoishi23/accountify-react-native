@@ -5,7 +5,7 @@ import {AccountifyUser} from '../util/db/models/accountifyUser';
 import AffirmationButton from './common/AffirmationButton';
 import TextBox from './common/TextBox';
 import {getDimensions} from '../util/getDimensions';
-import {ToastAndroid, View} from 'react-native';
+import {KeyboardAvoidingView, Platform, ToastAndroid, View} from 'react-native';
 import DropdownField from './common/DropdownField';
 import {CurrencyList} from '../util/currencylist';
 import {addUser, updateUser} from '../util/db/repository';
@@ -130,16 +130,21 @@ const SettingsScreen: React.FC<{
         }}>
         <Text style={{fontSize: 30}}>Settings</Text>
       </View>
-      <MoneyAmountField
-        amount={handleInputChange(settings.monthlyIncome.toString())}
-        setAmount={(newAmount: string) =>
-          setSettings({
-            ...settings,
-            monthlyIncome: parseFloat(newAmount.split(',').join('')) as number,
-          })
-        }
-        label="Your monthly earnings"
-      />
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <MoneyAmountField
+          amount={handleInputChange(settings.monthlyIncome.toString())}
+          setAmount={(newAmount: string) =>
+            setSettings({
+              ...settings,
+              monthlyIncome: parseFloat(
+                newAmount.split(',').join(''),
+              ) as number,
+            })
+          }
+          label="Your monthly earnings"
+        />
+      </KeyboardAvoidingView>
       <TextBox
         label="Needs Allocation"
         type="number"
