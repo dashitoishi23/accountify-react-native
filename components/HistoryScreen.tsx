@@ -1,7 +1,7 @@
-/* eslint-disable react-native/no-inline-styles */
-import React, {useEffect, useState} from 'react';
-import {View, ScrollView} from 'react-native';
-import {Spend} from '../util/db/models/spend';
+import React, {useState, useEffect} from 'react';
+import {View, Text, TouchableOpacity, StyleSheet, Modal} from 'react-native';
+import {handleInputChange} from '../util/currencyInputHandler';
+import moment from 'moment';
 import {
   deleteSpend,
   getAllSpendsByMonth,
@@ -10,19 +10,17 @@ import {
   getTotalSpendsInCurrentMonth,
   getUser,
 } from '../util/db/repository';
-import {Button, Portal, Text, Modal, useTheme} from 'react-native-paper';
-import {handleInputChange} from '../util/currencyInputHandler';
-import moment from 'moment';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
-import DropdownField from './common/DropdownField';
 import {historySpendConfig} from '../util/historySpendConfig';
-import {parse} from 'uuid';
+import {Spend} from '../util/db/models/spend';
 
-const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
+const HistoryScreen: React.FC<{
+  navigation: any;
+}> = ({navigation}) => {
   const [spends, setSpends] = useState<Spend[]>([]);
   const [settings, setSettings] = useState<AccountifyUser>();
-  const [visible, setVisible] = useState(false);
-  const [idToBeDeleted, setIdToBeDeleted] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
+  const [spendToDelete, setSpendToDelete] = useState<Spend>();
   const [totalMonthSpends, setTotalMonthSpends] = useState(0);
   const [historyConfig, setHistoryConfig] = useState('0');
 
@@ -36,188 +34,249 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
         setSettings(userSettings[0].rows.raw()[0]);
       }
       const userSpends = await getHistoricalSpends(parseInt(historyConfig));
-      console.log(userSpends);
       if (userSpends && userSpends.length > 0 && totalSpends) {
         setSpends(userSpends[0].rows.raw());
-        console.log({historyConfig, spends: userSpends[0].rows.raw()});
         setTotalMonthSpends(totalSpends[0].rows.raw()[0].total || 0);
       }
     })();
   }, [historyConfig]);
 
-  function handleEditButton(spendId: string) {
-    navigation.push('AddSpend', {
-      spendId,
-    });
-  }
+  const handleEditButton = (spendId: string) => {
+    navigation.push('AddSpend', {spendId});
+  };
 
-  function handleDeleteButton(spendId: string) {
-    setVisible(true);
-    setIdToBeDeleted(spendId);
-  }
+  const handleDeleteButton = (spend: Spend) => {
+    setSpendToDelete(spend);
+    setModalVisible(true);
+  };
 
-  async function handleModalButtons(removeSpend: boolean) {
-    if (removeSpend) {
-      await deleteSpend(idToBeDeleted);
-      setSpends(spends.filter(spend => spend.id !== idToBeDeleted));
-      setVisible(false);
-      navigation.push('Home');
-    } else {
-      setVisible(false);
-    }
-  }
+  const handleDeleteConfirm = async () => {
+    await deleteSpend(spendToDelete!.id);
+    setSpends(spends.filter(spend => spend.id !== spendToDelete!.id));
+    setModalVisible(false);
+  };
 
-  const hideModal = () => setVisible(false);
+  const handleDeleteCancel = () => {
+    setModalVisible(false);
+  };
 
-  const containerStyle = {backgroundColor: 'white', padding: 20, margin: 20};
-
-  const theme = useTheme();
   return (
-    <View
-      style={{
-        paddingLeft: 10,
-        paddingRight: 10,
-      }}>
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={containerStyle}>
-          <Text style={{color: 'black', marginBottom: 20}}>
-            Are you sure you want to delete this spend?
-          </Text>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-            }}>
-            <Button
-              onPress={() => handleModalButtons(false)}
-              style={{backgroundColor: 'white'}}>
-              No
-            </Button>
-            <Button
-              onPress={() => handleModalButtons(true)}
-              style={{backgroundColor: 'red'}}>
-              Yes
-            </Button>
-          </View>
-        </Modal>
-      </Portal>
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-evenly',
-          margin: 40,
-        }}>
-        <Text style={{fontSize: 30}}>History</Text>
-      </View>
-      {spends && spends.length > 0 ? (
-        <View
-          style={{
-            overflow: 'scroll',
-            paddingBottom: 10,
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>History</Text>
+        <TouchableOpacity
+          style={styles.dropdownContainer}
+          onPress={() => {
+            // Implement dropdown functionality
           }}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              margin: 20,
-              zIndex: 4000,
-            }}>
-            <DropdownField
-              items={historySpendConfig}
-              setItem={(value: string) => setHistoryConfig(value)}
-              placeholderText="How far back do you want to go?"
-              labelText="How far back?"
-              value={historyConfig.toString()}
-            />
+          <Text style={styles.dropdownText}>{historyConfig}</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.totalSpendContainer}>
+        <Text style={styles.totalSpendText}>
+          Total spends: {settings?.defaultCurrency}{' '}
+          {handleInputChange(totalMonthSpends.toString())}
+        </Text>
+      </View>
+      <View style={styles.spendContainer}>
+        {spends.map(spend => (
+          <View key={spend.id} style={styles.spendItem}>
+            <Text style={styles.spendTitle}>
+              {spend.spendTitle.length > 0
+                ? spend.spendTitle
+                : spend.category.charAt(0).toUpperCase() +
+                  spend.category.slice(1)}
+            </Text>
+            <Text style={styles.spendAmount}>
+              {settings?.defaultCurrency}{' '}
+              {handleInputChange(spend.amount.toString())}
+            </Text>
+            <Text style={styles.spendDate}>
+              {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
+            </Text>
+            <Text style={styles.spendCategory}>
+              {spend.category.charAt(0).toUpperCase() + spend.category.slice(1)}
+            </Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={[styles.button, styles.editButton]}
+                onPress={() => handleEditButton(spend.id)}>
+                <Text style={styles.buttonText}>Edit</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.deleteButton]}
+                onPress={() => handleDeleteButton(spend)}>
+                <Text style={styles.buttonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <View
-            style={{
-              paddingLeft: 10,
-              paddingRight: 10,
-              overflow: 'scroll',
-              margin: 20,
-            }}>
-            <Text
-              style={{
-                fontSize: 15,
-              }}>{`Total spends: ${
-              settings?.defaultCurrency
-            } ${handleInputChange(
-              (Math.round(totalMonthSpends * 100) / 100).toString(),
-            )}`}</Text>
+        ))}
+      </View>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Are you sure you want to delete this spend?
+            </Text>
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalCancelButton]}
+                onPress={handleDeleteCancel}>
+                <Text style={styles.modalButtonText}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.modalDeleteButton]}
+                onPress={handleDeleteConfirm}>
+                <Text style={styles.modalButtonText}>Delete</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-          <ScrollView>
-            {spends.map((spend, i) => (
-              <View key={i}>
-                <View
-                  style={{
-                    backgroundColor: theme.colors.onTertiary,
-                    borderRadius: 30,
-                    paddingLeft: 20,
-                    marginBottom: 20,
-                    paddingTop: 10,
-                    paddingRight: 20,
-                  }}>
-                  <Text style={{fontSize: 35}}>
-                    {spend.spendTitle.length > 0
-                      ? spend.spendTitle
-                      : spend.category.charAt(0).toUpperCase() +
-                        spend.category.slice(1)}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                    }}>
-                    {`${settings?.defaultCurrency} ${handleInputChange(
-                      spend.amount.toString(),
-                    )}`}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                    }}>
-                    {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
-                  </Text>
-                  <Text
-                    style={{
-                      fontSize: 25,
-                    }}>
-                    {spend.category.charAt(0).toUpperCase() +
-                      spend.category.slice(1)}
-                  </Text>
-                  <View
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      marginBottom: 20,
-                    }}>
-                    <Button onPress={() => handleEditButton(spend.id)}>
-                      Edit
-                    </Button>
-                    <Button
-                      onPress={() => handleDeleteButton(spend.id)}
-                      style={{backgroundColor: 'red'}}>
-                      Delete
-                    </Button>
-                  </View>
-                </View>
-              </View>
-            ))}
-            <View style={{height: 200}}></View>
-          </ScrollView>
         </View>
-      ) : (
-        <Text style={{fontSize: 20, textAlign: 'center'}}>No history yet</Text>
-      )}
+      </Modal>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 24,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  dropdownContainer: {
+    padding: 8,
+    backgroundColor: '#333',
+    borderRadius: 8,
+  },
+  dropdownText: {
+    fontSize: 16,
+    color: '#fff',
+  },
+  totalSpendContainer: {
+    marginBottom: 16,
+  },
+  totalSpendText: {
+    fontSize: 16,
+    color: '#fff',
+  },
+  spendContainer: {
+    flex: 1,
+  },
+  spendItem: {
+    backgroundColor: '#333',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  spendTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 8,
+  },
+  spendAmount: {
+    fontSize: 16,
+    color: '#fff',
+    marginBottom: 8,
+  },
+  spendDate: {
+    fontSize: 16,
+    color: '#fff',
+    marginBottom: 8,
+  },
+  spendCategory: {
+    fontSize: 16,
+    color: '#fff',
+    marginBottom: 16,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  editButton: {
+    backgroundColor: '#007bff',
+    marginRight: 8,
+  },
+  deleteButton: {
+    backgroundColor: '#dc3545',
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    backgroundColor: '#333',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    color: '#fff',
+    fontSize: 18,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  modalButton: {
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    elevation: 2,
+  },
+  modalCancelButton: {
+    backgroundColor: '#007bff',
+    marginRight: 10,
+  },
+  modalDeleteButton: {
+    backgroundColor: '#dc3545',
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+});
 
 export default HistoryScreen;
