@@ -117,7 +117,7 @@ const AddSpendScreen: React.FC<{
         <Text style={{fontSize: 30, color: 'white'}}>Add Spend</Text>
       </View>
       <MoneyAmountField
-        amount={handleInputChange(spend.amount.toString() || '0')}
+        amount={handleInputChange(spend.amount.toString())}
         setAmount={(amount: string) => {
           setSpend({
             ...spend,

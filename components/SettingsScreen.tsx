@@ -12,6 +12,7 @@ import {addUser, updateUser} from '../util/db/repository';
 import {Text, useTheme} from 'react-native-paper';
 import {dbOps} from '../util/db';
 import {getAccountifyUser} from '../util/db/init';
+import {handleInputChange} from '../util/currencyInputHandler';
 
 const SettingsScreen: React.FC<{
   navigation: any;
@@ -130,7 +131,7 @@ const SettingsScreen: React.FC<{
         <Text style={{fontSize: 30}}>Settings</Text>
       </View>
       <MoneyAmountField
-        amount={settings.monthlyIncome.toString()}
+        amount={handleInputChange(settings.monthlyIncome.toString())}
         setAmount={(newAmount: string) =>
           setSettings({
             ...settings,
