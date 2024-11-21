@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import DropDownPicker, {ItemType} from 'react-native-dropdown-picker';
 import {Text} from 'react-native-paper';
 import {getDimensions} from '../../util/getDimensions';
+import {Dropdown} from 'react-native-element-dropdown';
 
 const DropdownField: React.FC<{
   items: ItemType<string>[];
@@ -27,7 +28,7 @@ const DropdownField: React.FC<{
         }}>
         {labelText}
       </Text>
-      <DropDownPicker
+      {/* <DropDownPicker
         placeholder={placeholderText}
         items={items}
         value={currentValue}
@@ -39,6 +40,27 @@ const DropdownField: React.FC<{
         }}
         setOpen={setOpen}
         open={open}
+      /> */}
+      <Dropdown
+        data={items}
+        valueField={'value'}
+        labelField={'label'}
+        value={currentValue}
+        onChange={newValue => {
+          setItem(newValue.value);
+        }}
+        itemTextStyle={{
+          color: 'black',
+        }}
+        selectedTextStyle={{
+          color: 'white',
+        }}
+        inputSearchStyle={{
+          color: 'black',
+        }}
+        search
+        placeholder={placeholderText}
+        searchPlaceholder="Search"
       />
     </View>
   );

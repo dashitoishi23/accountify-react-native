@@ -114,44 +114,39 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
         }}>
         <Text style={{fontSize: 30}}>History</Text>
       </View>
+      <View
+        style={{
+          paddingHorizontal: 20,
+          zIndex: 4000,
+        }}>
+        <DropdownField
+          items={historySpendConfig}
+          setItem={(value: string) => setHistoryConfig(value)}
+          placeholderText="How far back do you want to go?"
+          labelText="How far back?"
+          value={historyConfig.toString()}
+        />
+      </View>
+      <View
+        style={{
+          paddingLeft: 10,
+          paddingRight: 10,
+          overflow: 'scroll',
+          margin: 20,
+        }}>
+        <Text
+          style={{
+            fontSize: 15,
+          }}>{`Total spends: ${settings?.defaultCurrency} ${handleInputChange(
+          (Math.round(totalMonthSpends * 100) / 100).toString(),
+        )}`}</Text>
+      </View>
       {spends && spends.length > 0 ? (
         <View
           style={{
             overflow: 'scroll',
             paddingBottom: 10,
           }}>
-          <View
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              margin: 20,
-              zIndex: 4000,
-            }}>
-            <DropdownField
-              items={historySpendConfig}
-              setItem={(value: string) => setHistoryConfig(value)}
-              placeholderText="How far back do you want to go?"
-              labelText="How far back?"
-              value={historyConfig.toString()}
-            />
-          </View>
-          <View
-            style={{
-              paddingLeft: 10,
-              paddingRight: 10,
-              overflow: 'scroll',
-              margin: 20,
-            }}>
-            <Text
-              style={{
-                fontSize: 15,
-              }}>{`Total spends: ${
-              settings?.defaultCurrency
-            } ${handleInputChange(
-              (Math.round(totalMonthSpends * 100) / 100).toString(),
-            )}`}</Text>
-          </View>
           <ScrollView>
             {spends.map((spend, i) => (
               <View key={i}>

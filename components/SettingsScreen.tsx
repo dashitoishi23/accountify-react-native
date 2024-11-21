@@ -87,6 +87,12 @@ const SettingsScreen: React.FC<{
         message: 'Monthly income must be non zero',
       };
 
+    if (settings.defaultStartDate === 0)
+      return {
+        error: true,
+        message: 'Default start date cannot be 0',
+      };
+
     return {
       error: false,
       message: 'NA',
@@ -97,7 +103,6 @@ const SettingsScreen: React.FC<{
     try {
       const {error, message} = settingsValidator();
       if (!error) {
-        console.log(newUser);
         if (newUser) {
           await addUser(settings);
         } else {
@@ -197,7 +202,7 @@ const SettingsScreen: React.FC<{
           setText={(startDate: string) => {
             setSettings({
               ...settings,
-              defaultStartDate: parseFloat(startDate),
+              defaultStartDate: parseInt(startDate),
             });
           }}
           text={settings.defaultStartDate.toString()}

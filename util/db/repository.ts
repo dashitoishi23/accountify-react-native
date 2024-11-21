@@ -31,7 +31,8 @@ const updateUser = (
 ): Promise<[ResultSet]> | undefined => {
   return db?.executeSql(
     `update AccountifyUser set monthlyIncome = ${updatedUser.monthlyIncome}, needsAllocation = ${updatedUser.needsAllocation}, 
-           wantsAllocation = ${updatedUser.wantsAllocation}, savingsAllocation = ${updatedUser.savingsAllocation}, defaultCurrency = '${updatedUser.defaultCurrency}'`,
+           wantsAllocation = ${updatedUser.wantsAllocation}, savingsAllocation = ${updatedUser.savingsAllocation}, defaultCurrency = '${updatedUser.defaultCurrency}',
+           defaultStartDate = ${updatedUser.defaultStartDate}`,
     [],
   );
 };
@@ -100,7 +101,7 @@ const getTotalSpendsByCategoryByCurrentMonth = (
     monthNumber,
     user ? user.defaultStartDate : 1,
   ).getTime();
-  
+
   return db?.executeSql(
     `select sum(amount) as total from Spend where category = ? and dateAdded >= ${firstOfMonth} 
     and dateAdded <= ${currentDate.getTime()}`,
@@ -152,7 +153,6 @@ const getAllSpendsByMonth = async (
   if (userData && userData.length) user = userData[0].rows.raw()[0];
 
   const currentDate = new Date();
-
 
   const startDate = user ? user.defaultStartDate : 1;
   if (startDate > currentDate.getDate()) {
