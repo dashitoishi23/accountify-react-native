@@ -87,10 +87,10 @@ const SettingsScreen: React.FC<{
         message: 'Monthly income must be non zero',
       };
 
-    if (settings.defaultStartDate === 0)
+    if (settings.defaultStartDate < 1 && settings.defaultStartDate > 31)
       return {
         error: true,
-        message: 'Default start date cannot be 0',
+        message: 'Default start date needs to be between 1 and 31',
       };
 
     return {
