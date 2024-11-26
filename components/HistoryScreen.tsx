@@ -73,7 +73,7 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
   const theme = useTheme();
   return (
-    <View
+    <ScrollView
       style={{
         paddingLeft: 10,
         paddingRight: 10,
@@ -159,7 +159,7 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
                     paddingTop: 10,
                     paddingRight: 20,
                   }}>
-                  <Text style={{fontSize: 35}}>
+                  <Text style={{fontSize: 30}}>
                     {spend.spendTitle.length > 0
                       ? spend.spendTitle
                       : spend.category.charAt(0).toUpperCase() +
@@ -167,7 +167,7 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
                   </Text>
                   <Text
                     style={{
-                      fontSize: 25,
+                      fontSize: 20,
                     }}>
                     {`${settings?.defaultCurrency} ${handleInputChange(
                       spend.amount.toString(),
@@ -175,13 +175,14 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
                   </Text>
                   <Text
                     style={{
-                      fontSize: 25,
+                      fontSize: 20,
                     }}>
                     {moment(spend.dateAdded).format('MMMM Do YYYY, h:mm a')}
                   </Text>
                   <Text
                     style={{
-                      fontSize: 25,
+                      fontSize: 20,
+                      fontStyle: 'italic',
                     }}>
                     {spend.category.charAt(0).toUpperCase() +
                       spend.category.slice(1)}
@@ -211,7 +212,7 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
       ) : (
         <Text style={{fontSize: 20, textAlign: 'center'}}>No history yet</Text>
       )}
-    </View>
+    </ScrollView>
   );
 };
 
