@@ -4,10 +4,8 @@ import {View, ScrollView} from 'react-native';
 import {Spend} from '../util/db/models/spend';
 import {
   deleteSpend,
-  getAllSpendsByMonth,
   getHistoricalSpends,
   getHistoricalTotalSpends,
-  getTotalSpendsInCurrentMonth,
   getUser,
 } from '../util/db/repository';
 import {Button, Portal, Text, Modal, useTheme} from 'react-native-paper';
@@ -16,7 +14,13 @@ import moment from 'moment';
 import {AccountifyUser} from '../util/db/models/accountifyUser';
 import DropdownField from './common/DropdownField';
 import {historySpendConfig} from '../util/historySpendConfig';
-import {parse} from 'uuid';
+
+const categoryConfig = [
+  {value: '0', label: 'All'},
+  {value: '1', label: 'Needs'},
+  {value: '2', label: 'Wants'},
+  {value: '3', label: 'Savings'},
+];
 
 const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [spends, setSpends] = useState<Spend[]>([]);
@@ -25,18 +29,22 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
   const [idToBeDeleted, setIdToBeDeleted] = useState('');
   const [totalMonthSpends, setTotalMonthSpends] = useState(0);
   const [historyConfig, setHistoryConfig] = useState('0');
+  const [category, setCategory] = useState('0');
 
   useEffect(() => {
     (async () => {
       const userSettings = await getUser();
       const totalSpends = await getHistoricalTotalSpends(
         parseInt(historyConfig),
+        parseInt(category),
       );
       if (userSettings && userSettings.length > 0) {
         setSettings(userSettings[0].rows.raw()[0]);
       }
-      const userSpends = await getHistoricalSpends(parseInt(historyConfig));
-      console.log(userSpends);
+      const userSpends = await getHistoricalSpends(
+        parseInt(historyConfig),
+        parseInt(category),
+      );
       if (userSpends && userSpends.length > 0 && totalSpends) {
         setSpends(userSpends[0].rows.raw());
         console.log({historyConfig, spends: userSpends[0].rows.raw()});
@@ -125,6 +133,19 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
           placeholderText="How far back do you want to go?"
           labelText="How far back?"
           value={historyConfig.toString()}
+        />
+      </View>
+      <View
+        style={{
+          paddingHorizontal: 20,
+          zIndex: 4000,
+        }}>
+        <DropdownField
+          items={categoryConfig}
+          setItem={(value: string) => setCategory(value)}
+          placeholderText="Choose category"
+          labelText="Category"
+          value={category.toString()}
         />
       </View>
       <View

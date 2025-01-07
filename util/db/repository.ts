@@ -111,6 +111,7 @@ const getTotalSpendsByCategoryByCurrentMonth = (
 
 const getTotalSpendsInCurrentMonth = async (
   monthNumber: number = new Date().getMonth(),
+  category: number,
 ): Promise<Promise<[ResultSet]> | undefined> => {
   const userData = await getUser();
 
@@ -130,11 +131,13 @@ const getTotalSpendsInCurrentMonth = async (
     user ? user.defaultStartDate : 1,
   ).getTime();
 
-  return db?.executeSql(
-    `select sum(amount) as total from Spend where dateAdded >= ${firstOfMonth} 
-    and dateAdded <= ${currentDate.getTime()}`,
-    [],
-  );
+  const query = `select sum(amount) as total from Spend where dateAdded >= ${firstOfMonth} 
+    and dateAdded <= ${currentDate.getTime()}`;
+  if (category !== 0) {
+    query.concat(` and category = '${getCategory(category)}'`);
+  }
+
+  return db?.executeSql(query, []);
 };
 
 const getFirstSpendMonth = (): Promise<[ResultSet]> | undefined => {
@@ -146,6 +149,7 @@ const getFirstSpendMonth = (): Promise<[ResultSet]> | undefined => {
 
 const getAllSpendsByMonth = async (
   monthNumber: number = new Date().getMonth(),
+  category: number,
 ): Promise<[ResultSet] | undefined> => {
   const userData = await getUser();
 
@@ -164,39 +168,50 @@ const getAllSpendsByMonth = async (
     monthNumber,
     user ? user.defaultStartDate : 1,
   ).getTime();
-  return db?.executeSql(
-    `Select * from Spend where dateAdded >= ${firstOfMonth} and dateAdded <= ${currentDate.getTime()} order by dateAdded DESC`,
-  );
+  const query = `Select * from Spend where dateAdded >= ${firstOfMonth} and dateAdded <= ${currentDate.getTime()}`;
+  if (category !== 0) {
+    query.concat(` and category = '${getCategory(category)}'`);
+  }
+  query.concat(' order by dateAdded DESC');
+  return db?.executeSql(query);
 };
 
 const getHistoricalSpends = (
   config: number,
+  category: number,
 ): Promise<[ResultSet] | undefined> => {
   const currentDate = new Date().getTime();
+  const query = `Select * from Spend where dateAdded >= ${getFirstDate(
+    config,
+    currentDate,
+  )} and dateAdded <= ${currentDate} order by dateAdded DESC`;
+  if (category !== 0) {
+    query.concat(` and category = '${getCategory(category)}'`);
+  }
+  query.concat(' order by dateAdded DESC');
+
   return config !== 0
-    ? db?.executeSql(
-        `Select * from Spend where dateAdded >= ${getFirstDate(
-          config,
-          currentDate,
-        )} and dateAdded <= ${currentDate} order by dateAdded DESC`,
-        [],
-      )
-    : getAllSpendsByMonth();
+    ? db?.executeSql(query, [])
+    : getAllSpendsByMonth(new Date().getMonth(), category);
 };
 
 const getHistoricalTotalSpends = async (
   config: number,
+  category: number,
 ): Promise<Promise<[ResultSet]> | undefined> => {
   const currentDate = new Date().getTime();
+  const query = `Select sum(amount) as total from Spend where dateAdded >= ${getFirstDate(
+    config,
+    currentDate,
+  )} and dateAdded <= ${currentDate}`;
+  if (category !== 0) {
+    query.concat(` and category = '${getCategory(category)}'`);
+  }
+  query.concat(' order by dateAdded DESC');
+
   return config !== 0
-    ? db?.executeSql(
-        `Select sum(amount) as total from Spend where dateAdded >= ${getFirstDate(
-          config,
-          currentDate,
-        )} and dateAdded <= ${currentDate} order by dateAdded DESC`,
-        [],
-      )
-    : getTotalSpendsInCurrentMonth();
+    ? db?.executeSql(query, [])
+    : getTotalSpendsInCurrentMonth(new Date().getMonth(), category);
 };
 
 const getFirstDate = (config: number, currentDate: number) => {
@@ -210,6 +225,17 @@ const getFirstDate = (config: number, currentDate: number) => {
       return new Date(currentDate - monthInMs * 6).getTime();
     case 12:
       return new Date(currentDate - monthInMs * 12).getTime();
+  }
+};
+
+const getCategory = (category: number) => {
+  switch (category) {
+    case 1:
+      return 'Needs';
+    case 2:
+      return 'Wants';
+    case 3:
+      return 'Savings';
   }
 };
 
