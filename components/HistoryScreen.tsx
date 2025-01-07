@@ -33,6 +33,7 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
 
   useEffect(() => {
     (async () => {
+      console.log('Eff');
       const userSettings = await getUser();
       const totalSpends = await getHistoricalTotalSpends(
         parseInt(historyConfig),
@@ -51,7 +52,7 @@ const HistoryScreen: React.FC<{navigation: any}> = ({navigation}) => {
         setTotalMonthSpends(totalSpends[0].rows.raw()[0].total || 0);
       }
     })();
-  }, [historyConfig]);
+  }, [historyConfig, category]);
 
   function handleEditButton(spendId: string) {
     navigation.push('AddSpend', {
